@@ -57,7 +57,7 @@ function Cart() {
                 <div className={styles.cartScrollable}>
                     {isEmpty ? (
                         <div className={styles.emptyCart_wrapper}>
-                            <img src={shoppingSVG} alt=""></img>
+                            <img src={shoppingSVG} alt="Shop Now"></img>
                             <h1>Your Cart is Empty, Start shopping some things!</h1>
                             <NavLink to="/products/">Check our products</NavLink>
                         </div>

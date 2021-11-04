@@ -64,17 +64,17 @@ const useStyles = makeStyles({
     },
 });
 function Header() {
-    const mClasses = useStyles();
+    const styles = useStyles();
     const location = useLocation();
     return (
         <div>
-        <AppBar className={mClasses.upperHeader}>
+        <AppBar className={styles.upperHeader}>
             <Grid container direction="row" justifyContent="space-around" alignItems="center">
                 <span>+625 252 256 642</span>
                 <span>contact@ourshop.com</span>
             </Grid>
         </AppBar>
-        <AppBar className={mClasses.header}>
+        <AppBar className={styles.header}>
             <div>
                 <Logo />
             </div>
@@ -103,20 +103,20 @@ function Header() {
                 </ul>
             </div>
             <div>
-                <IconButton className={mClasses.iconButton} title="Profile">
-                    <PermIdentityOutlinedIcon className={mClasses.icons} style={{ color: "#222222" }} />
+                <IconButton className={styles.iconButton} title="Profile">
+                    <PermIdentityOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
                 </IconButton>
-                <IconButton className={mClasses.iconButton} title="Search">
-                    <SearchOutlinedIcon className={mClasses.icons} style={{ color: "#222222" }} />
+                <IconButton className={styles.iconButton} title="Search">
+                    <SearchOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
                 </IconButton>
                 <IconButton
                     component={NavLink}
                     to={`${location.pathname}cart`}
                     activeClassName="active"
-                    className={mClasses.iconButton}
+                    className={styles.iconButton}
                     title="Cart"
                 >
-                    <LocalMallOutlinedIcon className={mClasses.icons} style={{ color: "#222222" }} />
+                    <LocalMallOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
                 </IconButton>
             </div>
         </AppBar>
