@@ -12,7 +12,9 @@ import {
     RadioGroup,
     IconButton,
     Grid,
+    Backdrop,
 } from "@material-ui/core";
+
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 const useStyles = makeStyles({
@@ -54,25 +56,19 @@ const useStyles = makeStyles({
         },
         "& .circleIcon": {
             position: "absolute",
-            fontSize: "2.2rem",
+            fontSize: "3.2rem",
             color: "#2d3245",
             left: "50%",
             transform: "translate(-50%, -35%)",
             borderRadius: "50%",
-
-            margin: "0",
-            padding: "1px",
-            border: "solid #f0f0f8 10px",
+            margin: "0 !Important",
+            padding: "0 !Important",
             zIndex: "1",
-            boxShadow: "inset 0 0 10px 10px rgba(0,0,0,0.5)",
+            boxShadow: "0 0 7px rgba(0,0,0,0.4)",
         },
         "& .circleIcon:hover ": {
-            transform: "translate(-50%, -35%), scale(1.1)",
-            boxShadow: "inset 0 0 20px 20px rgba(0,0,0,0.5) !important",
-            "& .circleIconImg": {
-                transform: "scale(1.1)",
-                borderRadius: "50%",
-            },
+            transform: "translate(-50%, -35%) scale(1.1) !important",
+            boxShadow: "0 0 7px rgba(0,0,0,0.5)",
         },
     },
     home: {
@@ -83,8 +79,7 @@ const useStyles = makeStyles({
         zIndex: "1",
         height: "fit-content",
         width: "90%",
-        maxWidth: "1200px",
-        padding: "6% 0 2rem 0",
+        padding: "5% 0 2rem 0",
         borderBottomLeftRadius: "60px",
         borderBottomRightRadius: "60px",
         flexWrap: "wrap",
@@ -92,10 +87,8 @@ const useStyles = makeStyles({
             objectPosition: "center",
             objectFit: "contain",
             background: "radial-gradient(rgba(0,0,0,.4) 0% , transparent 70%)",
-
             width: "100%",
             height: "100%",
-
             maxHeight: "300px",
         },
         "& .activeImgWrapper": {
@@ -111,6 +104,12 @@ const useStyles = makeStyles({
             "@media (max-width: 600px)": {
                 width: "90%",
                 marginBottom: "2em",
+            },
+        },
+        "& .homeContainer__content": {
+            "@media (max-width: 580px)": {
+                display: "flex",
+                flexDirection: "column",
             },
         },
         "& .imageDemoButton": {
@@ -130,23 +129,31 @@ const useStyles = makeStyles({
 });
 
 function Landing() {
-    const classes = useStyles();
+    const styles = useStyles();
 
     const commerceHandling = useContext(CommerceHandler);
-    let product = commerceHandling.landingProduct;
 
     const [activeImgUrl, setActiveImgUrl] = useState();
-    let landingImages = [];
+    const [landingImages, setLandingImages] = useState([]);
 
-    const fetchImages = () => {
-        if (product) {
-            product.assets.map((images) => landingImages.push(images.url));
-        }
-    };
+    let product = commerceHandling.landingProduct;
+
+    useEffect(() =>{
+        commerceHandling.setStep(0)
+    }, [])
+
     useEffect(() => {
+        const fetchImages = () => {
+            if (product) {
+                product.assets.map((images) => setLandingImages((prevState) => [...prevState, images.url]));
+            }
+        };
         fetchImages();
+    }, [product])
+
+    useEffect(() => {
         setActiveImgUrl(landingImages[0]);
-    }, [product]);
+    }, [landingImages]);
 
     const [checkbox, setCheckbox] = useState("color1");
     const handleChange = (event) => {
@@ -154,16 +161,22 @@ function Landing() {
     };
 
     return (
-        <div className={classes.root}>
+        <div className={styles.root}>
+
             <Container className="orbsBg">
                 <div className="orb__gradient orb__gradient__1" />
                 <div className="orb__gradient orb__gradient__2" />
                 <div className="orb__gradient orb__gradient__3" />
             </Container>
-            <Container className={classes.home}>
+
+            <Container className={styles.home}>
                 <div className="homeContainer_wrap">
                     <Grid container align="center" justifyContent="center" style={{ height: "fit-content" }}>
-                        <img className="activeImg" src={activeImgUrl} alt={product ? product.name : null} />
+                        <img
+                            className="activeImg"
+                            src={activeImgUrl ? activeImgUrl : null}
+                            alt={product ? product.name : null}
+                        />
                     </Grid>
                     <Grid
                         container
@@ -184,12 +197,11 @@ function Landing() {
                                   </Grid>
                               ))
                             : null}
-                            
                     </Grid>
                 </div>
 
                 <div className="homeContainer_wrap">
-                    <Container align="left" style={{ padding: "0 3rem" }}>
+                    <Container align="left" className="homeContainer__content">
                         <Typography
                             align="left"
                             style={{ color: "#4875ca", fontWeight: "500" }}
@@ -200,22 +212,21 @@ function Landing() {
                         </Typography>
                         <Typography
                             align="left"
-                            style={{ fontWeight: "700", color: "#222222" }}
+                            style={{ fontWeight: "700", marginBottom: "1.5rem", color: "#222222" }}
                             variant="h4"
-                            gutterBottom
                         >
                             {product ? product.name : null}
                         </Typography>
                         <Typography
                             align="left"
                             variant="subtitle1"
-                            style={{ color: "#333333", paddingBottom: "1rem", fontWeight: "300" }}
+                            style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
                             nowrap
                             dangerouslySetInnerHTML={{
                                 __html: product ? product.description : null,
                             }}
                         />
-                        <FormControl component="fieldset" style={{ width: "100%", paddingBottom: "2rem" }}>
+                        <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
                             <RadioGroup
                                 style={{ flexWrap: "nowrap" }}
                                 aria-label="colors"
@@ -254,7 +265,11 @@ function Landing() {
                     </Container>
                 </div>
             </Container>
-            <IconButton title="Expand" className="circleIcon" component="span">
+
+            <IconButton onClick={() => {
+                commerceHandling.setProductInView(product);
+                commerceHandling.openProductView();
+            }} title="Expand" className="circleIcon" component="span">
                 <AddCircleIcon className="circleIconImg" />
             </IconButton>
         </div>

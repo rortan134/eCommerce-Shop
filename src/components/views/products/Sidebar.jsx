@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { Box, Typography, Grid, Checkbox, FormControlLabel, FormGroup } from "@material-ui/core";
+import { Box, Typography, Grid, Checkbox, FormControlLabel, FormGroup, Slider } from "@material-ui/core";
 import styles from "./styles.module.scss";
 
-function Sidebar() {
+function valuetext(value) {
+    return `€${value}`;
+}
+
+function Sidebar({handlePriceChange, priceRange}) {
     const [checked, setChecked] = useState(true);
     const handleChange = (event) => {
         setChecked(event.target.checked);
-        console.log(checked)
+        console.log(checked);
     };
+
     return (
         <Box className={styles.sidebarWrapper}>
             <div className={styles.sidebarInnerWrapper}>
@@ -16,12 +21,23 @@ function Sidebar() {
                 </Typography>
                 <Grid
                     container
-                    spacing={4}
                     direction="row"
-                    justifyContent="space-evenly"
+                    justifyContent="space-between"
                     alignItems="center"
                     className={styles.colorsGrid}
                 >
+                    <Slider
+                        getAriaLabel={() => "Price range"}
+                        value={priceRange}
+                        getAriaValueText={valuetext}
+                        onChange={handlePriceChange}
+                        valueLabelDisplay="auto"
+                        defaultValue={priceRange}
+                        max={4000}
+                        classes={{root: styles.sliderWrapper}}
+                    />
+                    <Typography>0€</Typography>
+                    <Typography>4000€</Typography>
                 </Grid>
             </div>
             <div className={styles.sidebarInnerWrapper}>
@@ -32,7 +48,7 @@ function Sidebar() {
                     <Typography className={styles.subtitle} variant="subtitle2" align="left">
                         Materials
                     </Typography>
-                    <FormGroup>
+                    <FormGroup classes={{root: styles.checkboxesContainer}}>
                         <FormControlLabel
                             control={<Checkbox onChange={handleChange} name="check1" color="default" />}
                             label="Synthetic Skin (6)"

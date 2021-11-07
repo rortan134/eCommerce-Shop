@@ -47,3 +47,11 @@
     box-shadow: 0 9px 0px 0px #f0f0f8, 0 -9px 0px 0px #f0f0f8, 8px 0 15px rgba(0, 0, 0, 0.05), -8px 0 15px rgba(0, 0, 0, 0.05) !important;
     padding: 1em 1.5em !important;
 }
+.connectorLine {
+    color: #424a66;
+}
+.connectorAlternativeLabel {
+    top: 75px !important;
+    left: calc(-50% + 60px) !important;
+    right: calc(50% + 60px) !important;
+}

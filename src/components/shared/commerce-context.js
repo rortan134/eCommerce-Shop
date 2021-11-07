@@ -13,6 +13,9 @@ const CommerceHandler = createContext({
     checkoutToken: null,
     order: {},
     errorMessage: "",
+    currentShipping: null,
+    productViewIsOpen: false,
+    productInView: {},
 });
 
 export function CommerceProvider(props) {
@@ -32,6 +35,12 @@ export function CommerceProvider(props) {
     const [order, setOrder] = useState({});
 
     const [errorMessage, setErrorMessage] = useState("");
+
+    const [currentShipping, setCurrentShipping] = useState();
+
+    const [productViewIsOpen, openProductView ] = useState(false);
+
+    const [productInView, setProductInView] = useState({})
 
     // Fetch Items
     const fetchProductsHandler = async () => {
@@ -95,13 +104,32 @@ export function CommerceProvider(props) {
     const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
         try {
             const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder);
-
             setOrder(incomingOrder);
-            if(order) refreshCart();
+            if (order) refreshCart();
         } catch (error) {
-            setErrorMessage(error.data.error.message);
+            // setErrorMessage(error.data.error.message);
         }
     };
+
+    const handleShippingMethod = async (checkoutTokenId, currMethod, methods) => {
+        await commerce.checkout.checkShippingOption((checkoutTokenId), {
+            shipping_option_id: currMethod.shippingOption,
+            country: currMethod.shippingCountry,
+            region: currMethod.shippingState,
+        }).then((data) =>  {setCurrentShipping(data)})
+    };
+
+    const productInfoToggle = () => {
+        openProductView(!productViewIsOpen);
+    };
+
+    const productInfoClose = () => {
+        openProductView(false);
+    };
+
+    if(productViewIsOpen && activeStep === 0) {
+        document.body.style.overflowY = "hidden";
+    } else document.body.style.overflowY = "auto";
 
     const commerceContext = {
         cart: cart,
@@ -111,13 +139,20 @@ export function CommerceProvider(props) {
         activeStep: activeStep,
         shippingData: shippingData,
         checkoutToken: checkoutToken,
-
+        currentShipping: currentShipping,
+        
         order: order,
         onCaptureCheckout: handleCaptureCheckout,
         error: errorMessage,
 
         fetchProducts: fetchProductsHandler,
         fetchCart: fetchCartHandler,
+
+        productViewIsOpen: productViewIsOpen,
+        openProductView: productInfoToggle,
+        closeProductView: productInfoClose,
+        productInView: productInView,
+        setProductInView: setProductInView,
 
         addToCart: handleAddToCart,
         removeFromCart: handleRemoveFromCart,
@@ -127,6 +162,8 @@ export function CommerceProvider(props) {
         removeItemAddedWarning: removeItemAddedWarning,
 
         generateToken: generateToken,
+        handleShippingMethod: handleShippingMethod,
+        setStep: setActiveStep,
         checkoutNext: checkoutNext,
         checkoutNextStep: checkoutNextStep,
         checkoutBackStep: checkoutBackStep,

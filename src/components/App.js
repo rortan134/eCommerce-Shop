@@ -13,6 +13,7 @@ import Cart from "./views/cart/Cart";
 import SnackBar from "./shared/snackbar/Snackbar";
 import CarouselSlider from "./views/carousel/Carousel";
 import Checkout from "./views/checkout/Checkout";
+import ProductView from "./views/products/productView/ProductView";
 
 // =====================================================
 function App() {
@@ -36,9 +37,10 @@ function App() {
 
             <Switch>
                 <Route path="/" exact>
+                    <ProductView />
                     <Home />
-                    <CarouselSlider products={commerceHandling.products} />
-                    <Products products={commerceHandling.products} />
+                    <CarouselSlider />
+                    <Products/>
                 </Route>
 
                 <Route path="/news">

@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import CommerceHandler from "../../shared/commerce-context";
 import { Link } from "react-router-dom";
 import {
@@ -11,10 +11,10 @@ import {
     Button,
     Paper,
     Divider,
-    Container,
     List,
     ListItem,
     ListItemText,
+    StepConnector,
 } from "@material-ui/core";
 
 import AdressForm from "./AdressForm";
@@ -38,9 +38,17 @@ const steps = ["1. Checkout", "2. Payment", "3. Confirmation"];
 
 function Checkout() {
     const commerceHandling = useContext(CommerceHandler);
+    const [cartIsEmpty, setCartIsEmpty] = useState(false);
 
     useEffect(() => {
+        commerceHandling.closeProductView();
         commerceHandling.generateToken();
+        const checkIfCartIsEmpty = () => {
+            if (commerceHandling.cart.line_items && commerceHandling.cart.line_items.length === 0) {
+                setCartIsEmpty(true);
+            }
+        };
+        checkIfCartIsEmpty();
     }, [commerceHandling.cart]);
 
     const Form = () =>
@@ -62,6 +70,17 @@ function Checkout() {
           }))
         : null;
 
+    const CheckoutError = () =>
+        cartIsEmpty ? (
+            <>
+                <Typography variant="h6">Your Cart is empty.</Typography>
+                <br />
+                <Button component={Link} variant="outlined" to="/">
+                    Go to home page
+                </Button>
+            </>
+        ) : null;
+
     let Confirmation = () =>
         commerceHandling.order.customer ? (
             <>
@@ -75,7 +94,7 @@ function Checkout() {
                                 wrap="nowrap"
                                 alignItems="center"
                             >
-                                <CheckoutComplete style={{ padding: "2em" }} />
+                                <CheckoutComplete style={{ padding: "2em 0" }} />
                                 <Typography style={{ paddingBottom: ".6em" }} variant="h5">
                                     Order Confirmed
                                 </Typography>
@@ -129,27 +148,25 @@ function Checkout() {
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="h6">Subtotal</Typography>
                                 <Typography>
-                                    {commerceHandling.checkoutToken.live.subtotal.formatted_with_symbol}
+                                    {commerceHandling.currentShipping.live.subtotal.formatted_with_symbol}
                                 </Typography>
                             </Grid>
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="h6">Shipping Cost</Typography>
-                                <Typography>
-                                    {commerceHandling.checkoutToken.live.shipping.price.formatted_with_symbol}
-                                </Typography>
+                                <Typography>{commerceHandling.currentShipping.price.formatted_with_symbol}</Typography>
                             </Grid>
                             <Divider variant="middle" style={{ margin: "1em 0" }} />
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="h5">Grand Total</Typography>
                                 <Typography variant="h5">
-                                    {commerceHandling.checkoutToken.live.total.formatted_with_symbol}
+                                    {commerceHandling.currentShipping.live.total.formatted_with_symbol}
                                 </Typography>
                             </Grid>
                             <Divider variant="middle" style={{ margin: "1em 0" }} />
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="body1">Shipping Adress</Typography>
                                 <Typography variant="body1">
-                                    {commerceHandling.shippingData.shippingCountry},
+                                    {commerceHandling.shippingData.shippingCountry}, 
                                     {commerceHandling.shippingData.shippingAdress}, <br />
                                     {commerceHandling.shippingData.zipCode}
                                 </Typography>
@@ -159,20 +176,10 @@ function Checkout() {
                 </Grid>
             </>
         ) : (
-            <div className={styles.spinner}>
+            <Grid container justifyContent="center" alignItems="center">
                 <CircularProgress />
-            </div>
+            </Grid>
         );
-
-    if (commerceHandling.error) {
-        <>
-            <Typography variant="h6">An error has occurred: {commerceHandling.error}</Typography>
-            <br />
-            <Button component={Link} to="/">
-                Go to home page
-            </Button>
-        </>;
-    }
 
     function StepIcons(props) {
         const { active, completed, className } = props;
@@ -204,7 +211,16 @@ function Checkout() {
     return (
         <>
             <main className={styles.checkout__layout}>
-                <Stepper alternativeLabel activeStep={commerceHandling.activeStep} className={styles.checkout__stepper}>
+                <Stepper
+                    connector={
+                        <StepConnector
+                            classes={{ root: styles.connectorLine, alternativeLabel: styles.connectorAlternativeLabel }}
+                        />
+                    }
+                    alternativeLabel
+                    activeStep={commerceHandling.activeStep}
+                    className={styles.checkout__stepper}
+                >
                     {steps.map((step) => (
                         <Step key={step}>
                             <StepLabel classes={{ active: styles.activeStepLabel }} StepIconComponent={StepIcons}>
@@ -213,6 +229,7 @@ function Checkout() {
                         </Step>
                     ))}
                 </Stepper>
+
                 <Grid container direction="row" columns={2} spacing={4}>
                     <Grid item xs={12} md={6}>
                         {commerceHandling.activeStep === 2 ? null : <Review />}
@@ -222,17 +239,25 @@ function Checkout() {
                         {commerceHandling.activeStep === 2 ? null : commerceHandling.checkoutToken && <Form />}
                     </Grid>
 
-                    <Grid item xs={12}>
-                        {commerceHandling.checkoutToken && commerceHandling.activeStep === 1 ? (
-                            <PaymentForm />
-                        ) : commerceHandling.activeStep === 2 ? (
-                            <Confirmation />
-                        ) : (
-                            <Container>
-                                <CircularProgress />
-                            </Container>
-                        )}
-                    </Grid>
+                    {commerceHandling.activeStep >= 1 ? (
+                        <Grid item xs={12}>
+                            {commerceHandling.checkoutToken && commerceHandling.activeStep === 1 ? (
+                                <PaymentForm />
+                            ) : commerceHandling.activeStep === 2 ? (
+                                <Confirmation />
+                            ) : (
+                                <Grid container xs={12} justifyContent="center" alignItems="center">
+                                    <CircularProgress />
+                                </Grid>
+                            )}
+                        </Grid>
+                    ) : null}
+
+                    {commerceHandling.activeStep !== 2 || commerceHandling.currentShipping.valid === false ? (
+                        <Grid item container xs={12} justifyContent="center" direction="column" alignItems="center">
+                            <CheckoutError />
+                        </Grid>
+                    ) : null}
                 </Grid>
             </main>
         </>
