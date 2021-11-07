@@ -11,8 +11,7 @@ import {
     FormControlLabel,
     RadioGroup,
     IconButton,
-    Grid,
-    Backdrop,
+    Grid
 } from "@material-ui/core";
 
 import AddCircleIcon from "@material-ui/icons/AddCircle";
