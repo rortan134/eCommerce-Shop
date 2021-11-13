@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
 import ReactImageMagnify from "react-image-magnify";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 
 import {
     Button,
@@ -40,7 +41,6 @@ const useStyles = makeStyles({
         padding: "2rem",
     },
     product__image: {
-        
         "& img": {
             maxHeight: "230px !important",
             objectFit: "contain",
@@ -87,7 +87,7 @@ const useStyles = makeStyles({
     image__portal: {
         position: "absolute",
         zIndex: "999",
-        height: "320px",
+        height: "340px",
         "& div": {
             border: "solid 1px rgba(0,0,0,.4)",
             borderRadius: "6px",
@@ -124,8 +124,7 @@ function ProductView({ match }) {
     }, [match.params.permalink]);
 
     useEffect(() => {
-        setActiveImgUrl(product.assets ? product.assets[0] : null);
-        console.log(product);
+        setActiveImgUrl(product.assets ? product.assets[0] : null); 
     }, [product]);
 
     const [checkbox, setCheckbox] = useState("color1");
@@ -209,6 +208,7 @@ function ProductView({ match }) {
                                                     src: `${activeImgUrl ? activeImgUrl.url : null}`,
                                                 },
                                                 enlargedImagePortalId: "magnified__portal",
+                                                shouldUsePositiveSpaceLens: true,
                                             }}
                                         />
                                     </Grid>
@@ -243,9 +243,26 @@ function ProductView({ match }) {
                                     justifyContent="space-around"
                                 >
                                     <div id="magnified__portal" className={styles.image__portal} />
-                                    <Typography gutterBottom variant="h4">
-                                        {product ? product.name : null}
-                                    </Typography>
+                                    <Grid
+                                        item
+                                        container
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        wrap="nowrap"
+                                    >
+                                        <Typography variant="h4">{product ? product.name : null}</Typography>
+                                        <IconButton style={{ background: "#F5F6F4" }}>
+                                            <FavoriteBorderIcon style={{ color: "#2d3245" }} />
+                                        </IconButton>
+                                    </Grid>
+                                    <Typography
+                                        align="left"
+                                        variant="subtitle1"
+                                        style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: product ? product.description : null,
+                                        }}
+                                    />
                                     <Typography gutterBottom variant="h6">
                                         {product.price ? product.price.formatted_with_symbol : null}
                                     </Typography>
@@ -259,14 +276,26 @@ function ProductView({ match }) {
                                             value={checkbox}
                                             onChange={handleRadio}
                                         >
-                                            <FormControlLabel value="color1" control={<Radio color="primary" />} label="" />
+                                            <FormControlLabel
+                                                value="color1"
+                                                control={<Radio color="primary" />}
+                                                label=""
+                                            />
                                             <FormControlLabel
                                                 value="color2"
                                                 control={<Radio color="secondary" />}
                                                 label=""
                                             />
-                                            <FormControlLabel value="color3" control={<Radio color="primary" />} label="" />
-                                            <FormControlLabel value="color4" control={<Radio color="default" />} label="" />
+                                            <FormControlLabel
+                                                value="color3"
+                                                control={<Radio color="primary" />}
+                                                label=""
+                                            />
+                                            <FormControlLabel
+                                                value="color4"
+                                                control={<Radio color="default" />}
+                                                label=""
+                                            />
                                         </RadioGroup>
                                     </FormControl>
                                     <Grid container item alignItems="center" wrap="nowrap">
@@ -324,63 +353,30 @@ function ProductView({ match }) {
                             indicatorColor="primary"
                             textColor="primary"
                         >
-                            <Tab label="Detail" {...a11yProps(0)} />
-                            <Tab label="Warranty" {...a11yProps(1)} />
-                            <Tab disabled label="Customize" {...a11yProps(2)} />
-                            <Tab disabled label="How to Care" {...a11yProps(3)} />
-                            <Tab disabled label="Gallery" {...a11yProps(4)} />
+                            {product.attributes
+                                ? product.attributes.map((attribute, index) => (
+                                      <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
+                                  ))
+                                : null}
                         </Tabs>
                         <Divider style={{ margin: "1rem 0 2.5rem 0" }} variant="fullWidth" />
                         <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-                            <TabPanel value={value} index={0}>
-                                <Typography variant="h6">Description</Typography>
-                                <Typography
-                                    align="left"
-                                    variant="subtitle1"
-                                    style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
-                                    dangerouslySetInnerHTML={{
-                                        __html: product ? product.description : null,
-                                    }}
-                                />
-                                <br />
-                                <Typography variant="h6">Material</Typography>
-                                <Typography
-                                    align="left"
-                                    variant="subtitle1"
-                                    style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
-                                >
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum at doloribus
-                                    quisquam autem voluptates. Architecto, non. Dolorem aliquid adipisci dolor
-                                    perferendis voluptatum at rem provident. Lorem ipsum dolor sit amet consectetur,
-                                    adipisicing elit. Rem, libero? Lorem ipsum dolor sit amet consectetur adipisicing
-                                    elit. Doloremque architecto consequatur ipsam veniam modi neque, magnam itaque optio
-                                    blanditiis ut dolor sapiente labore necessitatibus doloribus veritatis suscipit
-                                    exercitationem vitae corrupti fugit, eligendi repudiandae debitis! Unde possimus
-                                    itaque adipisci quidem id.
-                                </Typography>
-                                <br />
-                                <Typography variant="h6">Notes</Typography>
-                                <Typography
-                                    align="left"
-                                    variant="subtitle1"
-                                    style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
-                                >
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum adipisci ullam
-                                    expedita laborum, saepe repellat.
-                                </Typography>
-                            </TabPanel>
-                            <TabPanel value={value} index={1}>
-                                No Warranty
-                            </TabPanel>
-                            <TabPanel value={value} index={2}>
-                                Item Three
-                            </TabPanel>
-                            <TabPanel value={value} index={3}>
-                                Item Three
-                            </TabPanel>
-                            <TabPanel value={value} index={4}>
-                                Item Three
-                            </TabPanel>
+                            {product.attributes
+                                ? product.attributes.map((attribute, index) => (
+                                      <TabPanel key={attribute.id} value={value} index={index}>
+                                          <Typography variant="h6">{attribute.name}</Typography>
+                                          <Typography
+                                              align="left"
+                                              variant="subtitle1"
+                                              style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                              dangerouslySetInnerHTML={{
+                                                  __html: attribute.value,
+                                              }}
+                                          />
+                                          <br />
+                                      </TabPanel>
+                                  ))
+                                : null}
                         </SwipeableViews>
                     </Container>
                 </Container>

@@ -1,8 +1,8 @@
 // Routing
-import { Switch, Route, useLocation } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
 // Dependencies
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext } from "react";
 import CommerceHandler from "./shared/commerce-context";
 
 // Components
@@ -33,7 +33,7 @@ function App() {
 
             {/* Main Components */}
             <Switch>
-                <Route path="/:pageNo*/cart" component={Cart} />
+                <Route path="/cart" component={Cart} />
                 
                 <Route path="/product/:permalink" exact component={ProductView} />
 

@@ -82,7 +82,6 @@ const useStyles = makeStyles({
 });
 function Header() {
     const styles = useStyles();
-    const location = useLocation();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -113,17 +112,17 @@ function Header() {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink activeClassName="active" to="/news/">
+                            <NavLink activeClassName="active" to="/news">
                                 New in
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink activeClassName="active" to="/products/">
+                            <NavLink activeClassName="active" to="/products">
                                 Products
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink activeClassName="active" to="/favorites/">
+                            <NavLink activeClassName="active" to="/favorites">
                                 Favorites
                             </NavLink>
                         </li>
@@ -138,7 +137,7 @@ function Header() {
                     </IconButton>
                     <IconButton
                         component={NavLink}
-                        to={`${location.pathname}cart`}
+                        to="/cart"
                         activeClassName="active"
                         className={styles.iconButton}
                         title="Cart"
