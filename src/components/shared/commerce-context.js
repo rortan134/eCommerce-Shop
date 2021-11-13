@@ -14,33 +14,19 @@ const CommerceHandler = createContext({
     order: {},
     errorMessage: "",
     currentShipping: null,
-    productViewIsOpen: false,
-    productInView: {},
 });
 
 export function CommerceProvider(props) {
     const [cart, setCart] = useState({});
-
     const [products, setProducts] = useState([]);
     const [landingProduct, setLandingProduct] = useState();
-
     const [itemAddedToCart, setItemAddedToCart] = useState(undefined);
-
     const [shippingData, setShippingData] = useState({});
-
     const [checkoutToken, setCheckoutToken] = useState(null);
-
     const [activeStep, setActiveStep] = useState(0);
-
     const [order, setOrder] = useState({});
-
     const [errorMessage, setErrorMessage] = useState("");
-
     const [currentShipping, setCurrentShipping] = useState();
-
-    const [productViewIsOpen, openProductView ] = useState(false);
-
-    const [productInView, setProductInView] = useState({})
 
     // Fetch Items
     const fetchProductsHandler = async () => {
@@ -84,6 +70,7 @@ export function CommerceProvider(props) {
         setCart(newCart);
     };
 
+    // Checkout Handlers
     const generateToken = async () => {
         try {
             const token = await commerce.checkout.generateToken(cart.id, { type: "cart" });
@@ -107,7 +94,7 @@ export function CommerceProvider(props) {
             setOrder(incomingOrder);
             if (order) refreshCart();
         } catch (error) {
-            // setErrorMessage(error.data.error.message);
+            setErrorMessage(error.data.error.message);
         }
     };
 
@@ -119,18 +106,7 @@ export function CommerceProvider(props) {
         }).then((data) =>  {setCurrentShipping(data)})
     };
 
-    const productInfoToggle = () => {
-        openProductView(!productViewIsOpen);
-    };
-
-    const productInfoClose = () => {
-        openProductView(false);
-    };
-
-    if(productViewIsOpen && activeStep === 0) {
-        document.body.style.overflowY = "hidden";
-    } else document.body.style.overflowY = "auto";
-
+    // Export variables
     const commerceContext = {
         cart: cart,
         cartQty: cart.total_items,
@@ -147,12 +123,6 @@ export function CommerceProvider(props) {
 
         fetchProducts: fetchProductsHandler,
         fetchCart: fetchCartHandler,
-
-        productViewIsOpen: productViewIsOpen,
-        openProductView: productInfoToggle,
-        closeProductView: productInfoClose,
-        productInView: productInView,
-        setProductInView: setProductInView,
 
         addToCart: handleAddToCart,
         removeFromCart: handleRemoveFromCart,

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import CommerceHandler from "../../shared/commerce-context";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import {
     Paper,
     Typography,
@@ -20,6 +20,7 @@ import styles from "./styles.module.scss";
 
 function CarouselSlider() {
     const commerceHandling = useContext(CommerceHandler);
+    const history = useHistory();
 
     const responsive = {
         superLargeDesktop: {
@@ -78,8 +79,8 @@ function CarouselSlider() {
                             <CardActionArea
                                 className={styles.carousel__cardActionArea}
                                 onClick={() => {
-                                    commerceHandling.setProductInView(product);
-                                    commerceHandling.openProductView();
+                                    let path = `/product/${product.permalink}`;
+                                    history.push(path);
                                 }}
                             >
                                 <div className={styles.carousel__cardImageWrapper}>

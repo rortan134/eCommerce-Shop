@@ -1,8 +1,8 @@
 // Routing
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 
 // Dependencies
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import CommerceHandler from "./shared/commerce-context";
 
 // Components
@@ -14,6 +14,7 @@ import SnackBar from "./shared/snackbar/Snackbar";
 import CarouselSlider from "./views/carousel/Carousel";
 import Checkout from "./views/checkout/Checkout";
 import ProductView from "./views/products/productView/ProductView";
+import NotFound from "./views/NotFound";
 
 // =====================================================
 function App() {
@@ -22,25 +23,24 @@ function App() {
     useEffect(() => {
         commerceHandling.fetchProducts();
         commerceHandling.fetchCart();
-        
     }, []);
 
     return (
         <>
+            {/* Utility Components */}
             <Header />
-
             <SnackBar />
 
-            <Route path="/:pageNo*/cart">
-                <Cart />
-            </Route>
-
+            {/* Main Components */}
             <Switch>
+                <Route path="/:pageNo*/cart" component={Cart} />
+                
+                <Route path="/product/:permalink" exact component={ProductView} />
+
                 <Route path="/" exact>
-                    <ProductView />
                     <Home />
                     <CarouselSlider />
-                    <Products/>
+                    <Products />
                 </Route>
 
                 <Route path="/news">
@@ -55,9 +55,10 @@ function App() {
                     <h1>favorites</h1>
                 </Route>
 
-                <Route exact path="/checkout">
-                    <Checkout />
-                </Route>
+                <Route path="/checkout" exact component={Checkout} onLeave={() => commerceHandling.setStep(0)} />
+
+                
+                <Route path="*" component={NotFound} />
             </Switch>
         </>
     );

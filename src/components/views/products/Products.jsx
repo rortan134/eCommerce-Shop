@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import CommerceHandler from "../../shared/commerce-context";
 import Sidebar from "./Sidebar";
 import Product from "./Product";
@@ -8,6 +9,7 @@ import styles from "./styles.module.scss";
 
 function Products() {
     const commerceHandling = useContext(CommerceHandler);
+    const history = useHistory();
 
     const [priceRange, setPriceRange] = useState([0, 4000]);
     const [productFiltered, setFilteredProduct] = useState([]);
@@ -38,8 +40,8 @@ function Products() {
                             <Product
                                 product={product}
                                 customClickEvent={() => {
-                                    commerceHandling.setProductInView(product);
-                                    commerceHandling.openProductView();
+                                    let path = `/product/${product.permalink}`;
+                                    history.push(path);
                                 }}
                             />
                         </Grid>

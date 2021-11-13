@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import CommerceHandler from "../../shared/commerce-context";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 
 import {
     Button,
@@ -11,7 +12,7 @@ import {
     FormControlLabel,
     RadioGroup,
     IconButton,
-    Grid
+    Grid,
 } from "@material-ui/core";
 
 import AddCircleIcon from "@material-ui/icons/AddCircle";
@@ -131,15 +132,12 @@ function Landing() {
     const styles = useStyles();
 
     const commerceHandling = useContext(CommerceHandler);
+    const history = useHistory();
 
     const [activeImgUrl, setActiveImgUrl] = useState();
     const [landingImages, setLandingImages] = useState([]);
 
     let product = commerceHandling.landingProduct;
-
-    useEffect(() =>{
-        commerceHandling.setStep(0)
-    }, [])
 
     useEffect(() => {
         const fetchImages = () => {
@@ -148,7 +146,7 @@ function Landing() {
             }
         };
         fetchImages();
-    }, [product])
+    }, [product]);
 
     useEffect(() => {
         setActiveImgUrl(landingImages[0]);
@@ -161,7 +159,6 @@ function Landing() {
 
     return (
         <div className={styles.root}>
-
             <Container className="orbsBg">
                 <div className="orb__gradient orb__gradient__1" />
                 <div className="orb__gradient orb__gradient__2" />
@@ -265,10 +262,15 @@ function Landing() {
                 </div>
             </Container>
 
-            <IconButton onClick={() => {
-                commerceHandling.setProductInView(product);
-                commerceHandling.openProductView();
-            }} title="Expand" className="circleIcon" component="span">
+            <IconButton
+                onClick={() => {
+                    let path = `/product/${product.permalink}`;
+                    history.push(path);
+                }}
+                title="Expand"
+                className="circleIcon"
+                component="span"
+            >
                 <AddCircleIcon className="circleIconImg" />
             </IconButton>
         </div>

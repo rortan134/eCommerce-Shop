@@ -8,6 +8,9 @@ function valuetext(value) {
 
 function Sidebar({handlePriceChange, priceRange}) {
     const [checked, setChecked] = useState(true);
+
+    
+
     const handleChange = (event) => {
         setChecked(event.target.checked);
         console.log(checked);
