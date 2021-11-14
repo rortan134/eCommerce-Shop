@@ -41,7 +41,6 @@ function Checkout() {
     const [cartIsEmpty, setCartIsEmpty] = useState(false);
 
     useEffect(() => {
-        commerceHandling.closeProductView();
         commerceHandling.generateToken();
         const checkIfCartIsEmpty = () => {
             if (commerceHandling.cart.line_items && commerceHandling.cart.line_items.length === 0) {

@@ -52,7 +52,7 @@ function SnackBar() {
                     <Button
                         className={styles.snackbar__action__btn}
                         component={Link}
-                        to="cart"
+                        to="/cart"
                         variant="outlined"
                         onClick={closeHandler}
                     >
