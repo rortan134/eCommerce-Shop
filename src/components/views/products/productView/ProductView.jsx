@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
 import ReactImageMagnify from "react-image-magnify";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
 
 import {
     Button,
@@ -175,6 +176,12 @@ function ProductView({ match }) {
         setValue(index);
     };
 
+    const zoomHintComponent = () => (
+        <>
+            <ZoomInIcon style={{position: "absolute", right: "35px", bottom: "5px", background: "rgba(245, 246, 244, 0.3)", padding: ".2rem" }} />
+        </>
+    )
+
     return (
         <>
             {invalidProduct ? (
@@ -209,6 +216,9 @@ function ProductView({ match }) {
                                                 },
                                                 enlargedImagePortalId: "magnified__portal",
                                                 shouldUsePositiveSpaceLens: true,
+                                                isHintEnabled: true,
+                                                shouldHideHintAfterFirstActivation: false,
+                                                hintComponent: zoomHintComponent,
                                             }}
                                         />
                                     </Grid>
@@ -224,6 +234,7 @@ function ProductView({ match }) {
                                                   <Grid key={images.id} item zeroMinWidth>
                                                       <IconButton
                                                           onClick={() => setActiveImgUrl(images)}
+                                                          onMouseEnter={() => setActiveImgUrl(images)}
                                                           className={styles.imageDemoButton}
                                                       >
                                                           <img src={images.url} width="25px" alt="Buy now" />
@@ -364,7 +375,7 @@ function ProductView({ match }) {
                             {product.attributes
                                 ? product.attributes.map((attribute, index) => (
                                       <TabPanel key={attribute.id} value={value} index={index}>
-                                          <Typography variant="h6">{attribute.name}</Typography>
+                                          <Typography gutterBottom variant="h6">{attribute.name}</Typography>
                                           <Typography
                                               align="left"
                                               variant="subtitle1"
