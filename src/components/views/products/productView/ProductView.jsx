@@ -25,27 +25,26 @@ import {
 
 const useStyles = makeStyles({
     component__wrapper: {
-        zIndex: "999",
-        position: "absolute",
         background: "#ffffff",
         maxWidth: "none",
         padding: "0",
         height: "100%",
         overflowY: "auto",
         boxShadow: "0 0 15px rgba(0,0,0,.5)",
+        minHeight: "95vh",
     },
     product__container: {
         width: "100%",
         padding: "2rem 0",
-    },
-    product__image__wrapper: {
-        padding: "2rem",
     },
     product__image: {
         "& img": {
             maxHeight: "230px !important",
             objectFit: "contain",
             objectPosition: "center",
+        },
+        "& div": {
+            maxWidth: "500px",
         },
     },
     imageDemoButton: {
@@ -84,6 +83,9 @@ const useStyles = makeStyles({
     },
     product__description__container: {
         maxHeight: "none",
+    },
+    product__content: {
+        padding: "2.5% 2rem"
     },
     image__portal: {
         position: "absolute",
@@ -178,7 +180,7 @@ function ProductView({ match }) {
 
     const zoomHintComponent = () => (
         <>
-            <ZoomInIcon style={{position: "absolute", right: "35px", bottom: "5px", background: "rgba(245, 246, 244, 0.3)", padding: ".2rem" }} />
+            <ZoomInIcon style={{position: "absolute", right: "15px", bottom: "0", background: "rgba(245, 246, 244, 0.3)", padding: ".2rem" }} />
         </>
     )
 
@@ -188,208 +190,210 @@ function ProductView({ match }) {
                 <div>Product not found.</div>
             ) : (
                 <Container className={styles.component__wrapper}>
-                    <Container>
-                        <Grid container className={styles.product__container}>
-                            <Grid container item>
-                                <Grid
-                                    className={styles.product__image__grid}
-                                    item
-                                    container
-                                    xs={12}
-                                    md={6}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                >
-                                    <Grid item xs={12} className={styles.product__image__wrapper}>
-                                        <ReactImageMagnify
-                                            className={styles.product__image}
-                                            {...{
-                                                smallImage: {
-                                                    alt: `${product ? product.name : null}`,
-                                                    src: `${activeImgUrl ? activeImgUrl.url : null}`,
-                                                    isFluidWidth: true,
-                                                },
-                                                largeImage: {
-                                                    width: activeImgUrl ? activeImgUrl.image_dimensions.width : null,
-                                                    height: activeImgUrl ? activeImgUrl.image_dimensions.height : null,
-                                                    src: `${activeImgUrl ? activeImgUrl.url : null}`,
-                                                },
-                                                enlargedImagePortalId: "magnified__portal",
-                                                shouldUsePositiveSpaceLens: true,
-                                                isHintEnabled: true,
-                                                shouldHideHintAfterFirstActivation: false,
-                                                hintComponent: zoomHintComponent,
-                                            }}
-                                        />
-                                    </Grid>
+                    <Container style={{borderRadius: "20px", background: "#fdfdfd", marginTop: "20px", maxWidth: "90%"}}>
+                        <Container>
+                            <Grid container className={styles.product__container}>
+                                <Grid container item>
                                     <Grid
-                                        container
-                                        direction="row"
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        className="activeImgWrapper"
-                                    >
-                                        {product.assets
-                                            ? product.assets.map((images) => (
-                                                  <Grid key={images.id} item zeroMinWidth>
-                                                      <IconButton
-                                                          onClick={() => setActiveImgUrl(images)}
-                                                          onMouseEnter={() => setActiveImgUrl(images)}
-                                                          className={styles.imageDemoButton}
-                                                      >
-                                                          <img src={images.url} width="25px" alt="Buy now" />
-                                                      </IconButton>
-                                                  </Grid>
-                                              ))
-                                            : null}
-                                    </Grid>
-                                </Grid>
-                                <Grid
-                                    style={{ padding: "2.5% 2rem" }}
-                                    container
-                                    direction="column"
-                                    item
-                                    xs={12}
-                                    md={6}
-                                    justifyContent="space-around"
-                                >
-                                    <div id="magnified__portal" className={styles.image__portal} />
-                                    <Grid
+                                        className={styles.product__content}
                                         item
                                         container
-                                        justifyContent="space-between"
+                                        xs={12}
+                                        md={6}
+                                        justifyContent="center"
                                         alignItems="center"
-                                        wrap="nowrap"
                                     >
-                                        <Typography variant="h4">{product ? product.name : null}</Typography>
-                                        <IconButton style={{ background: "#F5F6F4" }}>
-                                            <FavoriteBorderIcon style={{ color: "#2d3245" }} />
-                                        </IconButton>
+                                        <Grid item xs={12}>
+                                            <ReactImageMagnify
+                                                className={styles.product__image}
+                                                {...{
+                                                    smallImage: {
+                                                        alt: `${product ? product.name : null}`,
+                                                        src: `${activeImgUrl ? activeImgUrl.url : null}`,
+                                                        isFluidWidth: true,
+                                                    },
+                                                    largeImage: {
+                                                        width: activeImgUrl ? activeImgUrl.image_dimensions.width : null,
+                                                        height: activeImgUrl ? activeImgUrl.image_dimensions.height : null,
+                                                        src: `${activeImgUrl ? activeImgUrl.url : null}`,
+                                                    },
+                                                    enlargedImagePortalId: "magnified__portal",
+                                                    shouldUsePositiveSpaceLens: true,
+                                                    isHintEnabled: true,
+                                                    shouldHideHintAfterFirstActivation: false,
+                                                    hintComponent: zoomHintComponent,
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid
+                                            container
+                                            direction="row"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            className="activeImgWrapper"
+                                        >
+                                            {product.assets
+                                                ? product.assets.map((images) => (
+                                                      <Grid key={images.id} item zeroMinWidth>
+                                                          <IconButton
+                                                              onClick={() => setActiveImgUrl(images)}
+                                                              onMouseEnter={() => setActiveImgUrl(images)}
+                                                              className={styles.imageDemoButton}
+                                                          >
+                                                              <img src={images.url} width="25px" alt="Buy now" />
+                                                          </IconButton>
+                                                      </Grid>
+                                                  ))
+                                                : null}
+                                        </Grid>
                                     </Grid>
-                                    <Typography
-                                        align="left"
-                                        variant="subtitle1"
-                                        style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
-                                        dangerouslySetInnerHTML={{
-                                            __html: product ? product.description : null,
-                                        }}
-                                    />
-                                    <Typography gutterBottom variant="h6">
-                                        {product.price ? product.price.formatted_with_symbol : null}
-                                    </Typography>
-                                    <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
-                                        <RadioGroup
-                                            style={{ flexWrap: "nowrap" }}
-                                            aria-label="colors"
-                                            row
-                                            className="radioGroup"
-                                            name="colors"
-                                            value={checkbox}
-                                            onChange={handleRadio}
+                                    <Grid
+                                        className={styles.product__content}
+                                        container
+                                        direction="column"
+                                        item
+                                        xs={12}
+                                        md={6}
+                                        justifyContent="space-around"
+                                    >
+                                        <div id="magnified__portal" className={styles.image__portal} />
+                                        <Grid
+                                            item
+                                            container
+                                            justifyContent="space-between"
+                                            alignItems="center"
+                                            wrap="nowrap"
                                         >
-                                            <FormControlLabel
-                                                value="color1"
-                                                control={<Radio color="primary" />}
-                                                label=""
-                                            />
-                                            <FormControlLabel
-                                                value="color2"
-                                                control={<Radio color="secondary" />}
-                                                label=""
-                                            />
-                                            <FormControlLabel
-                                                value="color3"
-                                                control={<Radio color="primary" />}
-                                                label=""
-                                            />
-                                            <FormControlLabel
-                                                value="color4"
-                                                control={<Radio color="default" />}
-                                                label=""
-                                            />
-                                        </RadioGroup>
-                                    </FormControl>
-                                    <Grid container item alignItems="center" wrap="nowrap">
-                                        <Button
-                                            onClick={() => {
-                                                decreaseQty();
+                                            <Typography variant="h4">{product ? product.name : null}</Typography>
+                                            <IconButton style={{ background: "#F5F6F4" }}>
+                                                <FavoriteBorderIcon style={{ color: "#2d3245" }} />
+                                            </IconButton>
+                                        </Grid>
+                                        <Typography
+                                            align="left"
+                                            variant="subtitle1"
+                                            style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                            dangerouslySetInnerHTML={{
+                                                __html: product ? product.description : null,
                                             }}
-                                            className={styles.actionButton}
-                                            type="button"
-                                            size="small"
-                                        >
-                                            -
-                                        </Button>
-                                        <Typography style={{ marginRight: "0.8em" }}>{productQty}</Typography>
-                                        <Button
-                                            onClick={() => {
-                                                increaseQty();
-                                            }}
-                                            className={styles.actionButton}
-                                            type="button"
-                                            size="small"
-                                        >
-                                            +
-                                        </Button>
-                                        <Button
-                                            style={{
-                                                background: "#2d3245",
-                                                color: "#ffffff",
-                                            }}
-                                            className={styles.actionPaymentOptions}
-                                            variant="contained"
-                                            size="large"
-                                            title="Add To Cart"
-                                            disabled={commerceHandling.itemAddedToCart ? true : false}
-                                            onClick={() => {
-                                                if (!commerceHandling.itemAddedToCart) {
-                                                    commerceHandling.addToCart(product.id, productQty);
-                                                } else return;
-                                            }}
-                                        >
-                                            {commerceHandling.itemAddedToCart ? "Added To Cart!" : "Add To Cart"}
-                                        </Button>
+                                        />
+                                        <Typography gutterBottom variant="h6">
+                                            {product.price ? product.price.formatted_with_symbol : null}
+                                        </Typography>
+                                        <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
+                                            <RadioGroup
+                                                style={{ flexWrap: "nowrap" }}
+                                                aria-label="colors"
+                                                row
+                                                className="radioGroup"
+                                                name="colors"
+                                                value={checkbox}
+                                                onChange={handleRadio}
+                                            >
+                                                <FormControlLabel
+                                                    value="color1"
+                                                    control={<Radio color="primary" />}
+                                                    label=""
+                                                />
+                                                <FormControlLabel
+                                                    value="color2"
+                                                    control={<Radio color="secondary" />}
+                                                    label=""
+                                                />
+                                                <FormControlLabel
+                                                    value="color3"
+                                                    control={<Radio color="primary" />}
+                                                    label=""
+                                                />
+                                                <FormControlLabel
+                                                    value="color4"
+                                                    control={<Radio color="default" />}
+                                                    label=""
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <Grid container item alignItems="center" wrap="nowrap">
+                                            <Button
+                                                onClick={() => {
+                                                    decreaseQty();
+                                                }}
+                                                className={styles.actionButton}
+                                                type="button"
+                                                size="small"
+                                            >
+                                                -
+                                            </Button>
+                                            <Typography style={{ marginRight: "0.8em" }}>{productQty}</Typography>
+                                            <Button
+                                                onClick={() => {
+                                                    increaseQty();
+                                                }}
+                                                className={styles.actionButton}
+                                                type="button"
+                                                size="small"
+                                            >
+                                                +
+                                            </Button>
+                                            <Button
+                                                style={{
+                                                    background: "#2d3245",
+                                                    color: "#ffffff",
+                                                }}
+                                                className={styles.actionPaymentOptions}
+                                                variant="contained"
+                                                size="large"
+                                                title="Add To Cart"
+                                                disabled={commerceHandling.itemAddedToCart ? true : false}
+                                                onClick={() => {
+                                                    if (!commerceHandling.itemAddedToCart) {
+                                                        commerceHandling.addToCart(product.id, productQty);
+                                                    } else return;
+                                                }}
+                                            >
+                                                {commerceHandling.itemAddedToCart ? "Added To Cart!" : "Add To Cart"}
+                                            </Button>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
+                        </Container>
+                        <Container className={styles.product__info}>
+                            <Tabs
+                                scrollButtons="auto"
+                                value={value}
+                                onChange={handleChange}
+                                fullWidth
+                                indicatorColor="primary"
+                                textColor="primary"
+                            >
+                                {product.attributes
+                                    ? product.attributes.map((attribute, index) => (
+                                          <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
+                                      ))
+                                    : null}
+                            </Tabs>
+                            <Divider style={{ margin: "1rem 0 2.5rem 0" }} variant="fullWidth" />
+                            <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
+                                {product.attributes
+                                    ? product.attributes.map((attribute, index) => (
+                                          <TabPanel key={attribute.id} value={value} index={index}>
+                                              <Typography gutterBottom variant="h6">{attribute.name}</Typography>
+                                              <Typography
+                                                  align="left"
+                                                  variant="subtitle1"
+                                                  style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                                  dangerouslySetInnerHTML={{
+                                                      __html: attribute.value,
+                                                  }}
+                                              />
+                                              <br />
+                                          </TabPanel>
+                                      ))
+                                    : null}
+                            </SwipeableViews>
+                        </Container>
                     </Container>
-
-                    <Container className={styles.product__info}>
-                        <Tabs
-                            scrollButtons="auto"
-                            value={value}
-                            onChange={handleChange}
-                            fullWidth
-                            indicatorColor="primary"
-                            textColor="primary"
-                        >
-                            {product.attributes
-                                ? product.attributes.map((attribute, index) => (
-                                      <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
-                                  ))
-                                : null}
-                        </Tabs>
-                        <Divider style={{ margin: "1rem 0 2.5rem 0" }} variant="fullWidth" />
-                        <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-                            {product.attributes
-                                ? product.attributes.map((attribute, index) => (
-                                      <TabPanel key={attribute.id} value={value} index={index}>
-                                          <Typography gutterBottom variant="h6">{attribute.name}</Typography>
-                                          <Typography
-                                              align="left"
-                                              variant="subtitle1"
-                                              style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
-                                              dangerouslySetInnerHTML={{
-                                                  __html: attribute.value,
-                                              }}
-                                          />
-                                          <br />
-                                      </TabPanel>
-                                  ))
-                                : null}
-                        </SwipeableViews>
-                    </Container>
+                    
                 </Container>
             )}
         </>

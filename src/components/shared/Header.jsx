@@ -1,53 +1,45 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useLocation } from "react-router";
+import { useState, useEffect } from "react";
+import { NavLink, Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 
-import { AppBar, IconButton, Grid, Menu, MenuItem } from "@material-ui/core";
+import { AppBar, IconButton, Grid, Menu, MenuItem, Typography } from "@material-ui/core";
 
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import PermIdentityOutlinedIcon from "@material-ui/icons/PermIdentityOutlined";
 import LocalMallOutlinedIcon from "@material-ui/icons/LocalMallOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
+import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
-    root: {
-        background: "#f0f0f8",
-    },
-    iconButton: {
-        padding: "0",
-    },
-    icons: {
-        padding: "0.8rem",
-    },
     upperHeader: {
         width: "100%",
-        background: "#1D1C1B",
-        padding: ".5em 5%",
-        height: "28px",
+        background: "#2D3245",
+        boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
+        padding: ".7em 5%",
+        maxHeight: "40px",
         zIndex: "2000",
         fontSize: ".8em",
-
-        position: "sticky",
+        color: "black",
+        position: "relative",
+        zIndex: "999",
+        color: "#ffffff",
+        "& a": {
+            color: "#ffffff",
+        },
     },
     header: {
         display: "flex",
-
         flexDirection: "row",
-        background: "#f0f0f8",
+        background: "#ffffff",
         fontFamily: "roboto",
         fontWeight: "600",
         boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
         justifyContent: "space-between",
         alignItems: "center",
         padding: "1em 5%",
-        borderBottom: "solid rgba(0,0,0,.1) 1px",
         height: "85px",
-
-        position: "sticky",
-        top: "28px",
         "& ul": {
             display: "flex",
             flexDirection: "row",
@@ -69,6 +61,15 @@ const useStyles = makeStyles({
             },
         },
     },
+    header__extended: {
+        borderBottom: "solid 1px rgba(0,0,0,0.15)",
+    },
+    iconButton: {
+        padding: "0",
+    },
+    icons: {
+        padding: "0.8rem",
+    },
     header__links: {
         "@media (max-width: 800px)": {
             display: "none",
@@ -82,8 +83,17 @@ const useStyles = makeStyles({
 });
 function Header() {
     const styles = useStyles();
-
+    const [isAtTop, setAtTop] = useState(true);
     const [anchorEl, setAnchorEl] = useState(null);
+
+    useEffect(() => {
+        window.onscroll = function () {
+            if (window.pageYOffset <= 50) {
+                setAtTop(true);
+            } else setAtTop(false);
+        };
+    });
+
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -94,13 +104,27 @@ function Header() {
 
     return (
         <>
-            <AppBar position="sticky" className={styles.upperHeader}>
+            <AppBar position="static" className={styles.upperHeader}>
                 <Grid container direction="row" justifyContent="space-around" alignItems="center">
-                    <span>+625 252 256 642</span>
-                    <span>contact@ourshop.com</span>
+                    <Grid item>
+                        <Typography variant="subtitle2">
+                            contact@gmail.com
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Typography component={Link} variant="subtitle2">
+                            Test the Shopping System
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="subtitle2">
+                            Help Center
+                        </Typography>
+                        
+                    </Grid>
                 </Grid>
             </AppBar>
-            <AppBar position="sticky" className={styles.header}>
+            <AppBar position="sticky" className={`${styles.header} ${!isAtTop ? styles.header__extended : ""}`}>
                 <div>
                     <Logo />
                 </div>
@@ -133,7 +157,7 @@ function Header() {
                         <PermIdentityOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
                     </IconButton>
                     <IconButton className={styles.iconButton} title="Search" aria-label="search">
-                        <SearchOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
+                        <FavoriteBorder className={styles.icons} style={{ color: "#222222" }} />
                     </IconButton>
                     <IconButton
                         component={NavLink}

@@ -57,7 +57,6 @@ function AdressForm({ checkoutToken }) {
         if (shippingState) fetchShippingOptions(checkoutToken.id, shippingCountry, shippingState);
     }, [shippingState]);
 
-
     return (
         <>
             <div className={styles.all_aroundWrapper}>

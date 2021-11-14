@@ -20,7 +20,6 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 const useStyles = makeStyles({
     root: {
         width: "100%",
-        background: "#f0f0f8",
         paddingBottom: "5rem",
         "& .orbsBg": {
             maxHeight: "1200px",
@@ -49,9 +48,9 @@ const useStyles = makeStyles({
                 WebkitMask: "radial-gradient(circle,rgba(156,139,218,.42) 30%,hsla(0,0%,100%,0) 70%)",
             },
             "& .orb__gradient__3": {
-                background: "radial-gradient(circle at 90% 0,rgba(66, 74, 102, .5) 80%,hsla(0,0%,100%,0) 0)",
-                mask: "radial-gradient(circle at 90% 0,rgba(66, 74, 102, .5) 45%,hsla(0,0%,100%,0) 70%)",
-                WebkitMask: "radial-gradient(circle at 90% 0,rgba(66, 74, 102, .5) 45%,hsla(0,0%,100%,0) 70%)",
+                background: "radial-gradient(circle at 90% 0,rgba(66, 74, 102, .65) 80%,hsla(0,0%,100%,0) 0)",
+                mask: "radial-gradient(circle at 90% 0,rgba(66, 74, 102, .65) 45%,hsla(0,0%,100%,0) 70%)",
+                WebkitMask: "radial-gradient(circle at 90% 0,rgba(66, 74, 102, .65) 45%,hsla(0,0%,100%,0) 70%)",
             },
         },
         "& .circleIcon": {
