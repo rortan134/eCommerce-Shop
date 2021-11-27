@@ -35,12 +35,12 @@ function Products() {
             <Box component="section" className={styles.products__flex__wrapper}>
                 <Sidebar handlePriceChange={handlePriceChange} priceRange={priceRange} />
                 <Grid className={styles.ProductGridContainer} container wrap="wrap" direction="row">
-                    {productFiltered.map((product) => (
+                    {productFiltered.slice(0, 6).map((product) => (
                         <Grid key={product.id} item xs={12} sm={6}>
                             <Product
                                 product={product}
                                 customClickEvent={() => {
-                                    let path = `/product/${product.permalink}`;
+                                    let path = `/products/${product.permalink}`;
                                     history.push(path);
                                 }}
                             />

@@ -30,8 +30,9 @@ const useStyles = makeStyles({
         padding: "0",
         height: "100%",
         overflowY: "auto",
-        boxShadow: "0 0 15px rgba(0,0,0,.5)",
         minHeight: "95vh",
+        position: "relative",
+        top: "0",
     },
     product__container: {
         width: "100%",
@@ -85,7 +86,7 @@ const useStyles = makeStyles({
         maxHeight: "none",
     },
     product__content: {
-        padding: "2.5% 2rem"
+        padding: "2.5% 2rem",
     },
     image__portal: {
         position: "absolute",
@@ -110,7 +111,9 @@ function ProductView({ match }) {
     const [invalidProduct, setProductIsInvalid] = useState(false);
 
     const increaseQty = () => {
-        setProductQty(productQty + 1);
+        if (productQty >= product.inventory.available && product.inventory.managed) {
+            return;
+        } else if(productQty < 10) setProductQty(productQty + 1);
     };
 
     const decreaseQty = () => {
@@ -127,7 +130,7 @@ function ProductView({ match }) {
     }, [match.params.permalink]);
 
     useEffect(() => {
-        setActiveImgUrl(product.assets ? product.assets[0] : null); 
+        setActiveImgUrl(product.assets ? product.assets[0] : null);
     }, [product]);
 
     const [checkbox, setCheckbox] = useState("color1");
@@ -180,9 +183,19 @@ function ProductView({ match }) {
 
     const zoomHintComponent = () => (
         <>
-            <ZoomInIcon style={{position: "absolute", right: "15px", bottom: "0", background: "rgba(245, 246, 244, 0.3)", padding: ".2rem" }} />
+            <ZoomInIcon
+                style={{
+                    position: "absolute",
+                    right: "15px",
+                    bottom: "0",
+                    background: "rgba(245, 246, 244, 0.3)",
+                    padding: ".2rem",
+                }}
+            />
         </>
-    )
+    );
+
+    const lastUpdated = new Date(product.updated * 1000).toLocaleString(`${navigator.language}`).split(" ")[0];
 
     return (
         <>
@@ -190,7 +203,7 @@ function ProductView({ match }) {
                 <div>Product not found.</div>
             ) : (
                 <Container className={styles.component__wrapper}>
-                    <Container style={{borderRadius: "20px", background: "#fdfdfd", marginTop: "20px", maxWidth: "90%"}}>
+                    <Container style={{ borderRadius: "20px", marginTop: "20px", maxWidth: "90%" }}>
                         <Container>
                             <Grid container className={styles.product__container}>
                                 <Grid container item>
@@ -213,8 +226,12 @@ function ProductView({ match }) {
                                                         isFluidWidth: true,
                                                     },
                                                     largeImage: {
-                                                        width: activeImgUrl ? activeImgUrl.image_dimensions.width : null,
-                                                        height: activeImgUrl ? activeImgUrl.image_dimensions.height : null,
+                                                        width: activeImgUrl
+                                                            ? activeImgUrl.image_dimensions.width
+                                                            : null,
+                                                        height: activeImgUrl
+                                                            ? activeImgUrl.image_dimensions.height
+                                                            : null,
                                                         src: `${activeImgUrl ? activeImgUrl.url : null}`,
                                                     },
                                                     enlargedImagePortalId: "magnified__portal",
@@ -280,7 +297,10 @@ function ProductView({ match }) {
                                         <Typography gutterBottom variant="h6">
                                             {product.price ? product.price.formatted_with_symbol : null}
                                         </Typography>
-                                        <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
+                                        <FormControl
+                                            component="fieldset"
+                                            style={{ width: "100%", marginBottom: "3rem" }}
+                                        >
                                             <RadioGroup
                                                 style={{ flexWrap: "nowrap" }}
                                                 aria-label="colors"
@@ -312,7 +332,13 @@ function ProductView({ match }) {
                                                 />
                                             </RadioGroup>
                                         </FormControl>
-                                        <Grid container item alignItems="center" wrap="nowrap">
+                                        <Grid
+                                            container
+                                            item
+                                            alignItems="center"
+                                            wrap="nowrap"
+                                            style={{ marginBottom: "1.5rem" }}
+                                        >
                                             <Button
                                                 onClick={() => {
                                                     decreaseQty();
@@ -353,6 +379,15 @@ function ProductView({ match }) {
                                                 {commerceHandling.itemAddedToCart ? "Added To Cart!" : "Add To Cart"}
                                             </Button>
                                         </Grid>
+                                        {product.inventory && product.inventory.managed && product.inventory.available <= 10 ? (
+                                            <Typography variant="subtitle2" style={{ color: "rgba(255,0,0,1)" }}>
+                                                Only {product.inventory.available} left.
+                                            </Typography>
+                                        ) : (
+                                            <Typography variant="body2" style={{ color: "#007600" }}>
+                                                In Stock.
+                                            </Typography>
+                                        )}
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -367,9 +402,11 @@ function ProductView({ match }) {
                                 textColor="primary"
                             >
                                 {product.attributes
-                                    ? product.attributes.map((attribute, index) => (
-                                          <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
-                                      ))
+                                    ? product.attributes.map((attribute, index) =>
+                                          attribute.id !== commerceHandling.landingProductAtt ? (
+                                              <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
+                                          ) : null
+                                      )
                                     : null}
                             </Tabs>
                             <Divider style={{ margin: "1rem 0 2.5rem 0" }} variant="fullWidth" />
@@ -377,23 +414,31 @@ function ProductView({ match }) {
                                 {product.attributes
                                     ? product.attributes.map((attribute, index) => (
                                           <TabPanel key={attribute.id} value={value} index={index}>
-                                              <Typography gutterBottom variant="h6">{attribute.name}</Typography>
+                                              <Typography gutterBottom variant="h6">
+                                                  {attribute.name}
+                                              </Typography>
                                               <Typography
                                                   align="left"
                                                   variant="subtitle1"
-                                                  style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                                  style={{
+                                                      color: "#333333",
+                                                      marginBottom: "1.25rem",
+                                                      fontWeight: "300",
+                                                  }}
                                                   dangerouslySetInnerHTML={{
                                                       __html: attribute.value,
                                                   }}
                                               />
                                               <br />
+                                              <Typography style={{ color: "rgba(0,0,0,.4)" }} variant="caption">
+                                                  Last updated: {lastUpdated}
+                                              </Typography>
                                           </TabPanel>
                                       ))
                                     : null}
                             </SwipeableViews>
                         </Container>
                     </Container>
-                    
                 </Container>
             )}
         </>

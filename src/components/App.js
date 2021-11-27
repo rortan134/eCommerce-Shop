@@ -11,18 +11,20 @@ import Header from "./shared/Header";
 import Products from "./views/products/Products";
 import Cart from "./views/cart/Cart";
 import SnackBar from "./shared/snackbar/Snackbar";
-import CarouselSlider from "./views/carousel/Carousel";
+import CustomCards from "./views/carousel/CustomCards";
+import NewsCarousel from "./views/carousel/NewsCarousel";
 import Checkout from "./views/checkout/Checkout";
 import ProductView from "./views/products/productView/ProductView";
 import NotFound from "./views/NotFound";
 
-// =====================================================
 function App() {
     const commerceHandling = useContext(CommerceHandler);
 
     useEffect(() => {
         commerceHandling.fetchProducts();
+        commerceHandling.fetchCategories();
         commerceHandling.fetchCart();
+        commerceHandling.fetchMerchant();
     }, []);
 
     return (
@@ -35,11 +37,12 @@ function App() {
             <Switch>
                 <Route path="/cart" component={Cart} />
                 
-                <Route path="/product/:permalink" exact component={ProductView} />
+                <Route path="/products/:permalink" exact component={ProductView} />
 
                 <Route path="/" exact>
                     <Home />
-                    <CarouselSlider />
+                    <CustomCards />
+                    <NewsCarousel />
                     <Products />
                 </Route>
 

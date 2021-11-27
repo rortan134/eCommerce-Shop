@@ -5,8 +5,8 @@ const CommerceHandler = createContext({
     cart: {},
     cartQty: 0,
     products: [],
-    landingProduct: {},
-    itemAddedToCart: {},
+    categories: {},
+    itemAddedToCart: undefined,
     itemRemovedFromCart: {},
     activeStep: 0,
     shippingData: {},
@@ -14,12 +14,13 @@ const CommerceHandler = createContext({
     order: {},
     errorMessage: "",
     currentShipping: null,
+    landingProductAtt: "attr_gNXELwj1rl3A4p",
+    merchant: {},
 });
 
 export function CommerceProvider(props) {
     const [cart, setCart] = useState({});
     const [products, setProducts] = useState([]);
-    const [landingProduct, setLandingProduct] = useState();
     const [itemAddedToCart, setItemAddedToCart] = useState(undefined);
     const [shippingData, setShippingData] = useState({});
     const [checkoutToken, setCheckoutToken] = useState(null);
@@ -27,24 +28,31 @@ export function CommerceProvider(props) {
     const [order, setOrder] = useState({});
     const [errorMessage, setErrorMessage] = useState("");
     const [currentShipping, setCurrentShipping] = useState();
+    const [categories, setCategories] = useState({});
+    const [landingProductAtt, setLandingProductAtt] = useState("attr_gNXELwj1rl3A4p");
+    const [merchant, setMerchant] = useState({});
+
+    const fetchMerchantHandler = async () => {
+        const data = await commerce.merchants.about();
+        setMerchant(data.data[0]);
+    };
 
     // Fetch Items
     const fetchProductsHandler = async () => {
         const { data } = await commerce.products.list();
-        setProducts(data);
-
-        // Fetch landing product
-        commerce.products
-            .list({
-                category_slug: ["landing-page"],
-            })
-            .then((product) => setLandingProduct(product.data[0]));
+        data.map((product) => (product.active ? setProducts((prevArray) => [...prevArray, product]) : null));
     };
+
+    const fetchProductCategories = async () => {
+        const { data } = await commerce.categories.list();
+        setCategories(data);
+    };
+
+    // Cart Handlers
     const fetchCartHandler = async () => {
         setCart(await commerce.cart.retrieve());
     };
 
-    // Cart Handlers
     const handleAddToCart = async (productId, quantity) => {
         const { cart } = await commerce.cart.add(productId, quantity);
         setCart(cart);
@@ -99,11 +107,15 @@ export function CommerceProvider(props) {
     };
 
     const handleShippingMethod = async (checkoutTokenId, currMethod, methods) => {
-        await commerce.checkout.checkShippingOption((checkoutTokenId), {
-            shipping_option_id: currMethod.shippingOption,
-            country: currMethod.shippingCountry,
-            region: currMethod.shippingState,
-        }).then((data) =>  {setCurrentShipping(data)})
+        await commerce.checkout
+            .checkShippingOption(checkoutTokenId, {
+                shipping_option_id: currMethod.shippingOption,
+                country: currMethod.shippingCountry,
+                region: currMethod.shippingState,
+            })
+            .then((data) => {
+                setCurrentShipping(data);
+            });
     };
 
     // Export variables
@@ -111,17 +123,21 @@ export function CommerceProvider(props) {
         cart: cart,
         cartQty: cart.total_items,
         products: products,
-        landingProduct: landingProduct,
         activeStep: activeStep,
         shippingData: shippingData,
         checkoutToken: checkoutToken,
         currentShipping: currentShipping,
-        
+        productCategories: categories,
+        landingProductAtt: landingProductAtt,
+        merchant: merchant,
+
         order: order,
         onCaptureCheckout: handleCaptureCheckout,
         error: errorMessage,
 
+        fetchMerchant: fetchMerchantHandler,
         fetchProducts: fetchProductsHandler,
+        fetchCategories: fetchProductCategories,
         fetchCart: fetchCartHandler,
 
         addToCart: handleAddToCart,

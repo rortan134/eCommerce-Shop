@@ -134,22 +134,25 @@ function Landing() {
     const history = useHistory();
 
     const [activeImgUrl, setActiveImgUrl] = useState();
-    const [landingImages, setLandingImages] = useState([]);
-
-    let product = commerceHandling.landingProduct;
+    const [product, setProduct] = useState(null);
 
     useEffect(() => {
-        const fetchImages = () => {
-            if (product) {
-                product.assets.map((images) => setLandingImages((prevState) => [...prevState, images.url]));
-            }
-        };
-        fetchImages();
+        const getLandingProduct = () =>
+            commerceHandling.products
+                ? commerceHandling.products.map((product) =>
+                      product.attributes.filter((attribute) =>
+                          attribute.id === commerceHandling.landingProductAtt && attribute.value !== false
+                              ? setProduct(product)
+                              : null
+                      )
+                  )
+                : null;
+        getLandingProduct();
+    }, [commerceHandling.products, commerceHandling.landingProductAtt]);
+
+    useEffect(() => {
+        setActiveImgUrl(product ? product.image.url : null);
     }, [product]);
-
-    useEffect(() => {
-        setActiveImgUrl(landingImages[0]);
-    }, [landingImages]);
 
     const [checkbox, setCheckbox] = useState("color1");
     const handleChange = (event) => {
@@ -163,107 +166,108 @@ function Landing() {
                 <div className="orb__gradient orb__gradient__2" />
                 <div className="orb__gradient orb__gradient__3" />
             </Container>
-
-            <Container className={styles.home}>
-                <div className="homeContainer_wrap">
-                    <Grid container align="center" justifyContent="center" style={{ height: "fit-content" }}>
-                        <img
-                            className="activeImg"
-                            src={activeImgUrl ? activeImgUrl : null}
-                            alt={product ? product.name : null}
-                        />
-                    </Grid>
-                    <Grid
-                        container
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                        className="activeImgWrapper"
-                    >
-                        {product
-                            ? product.assets.map((images) => (
-                                  <Grid key={images.id} item zeroMinWidth>
-                                      <IconButton
-                                          onClick={() => setActiveImgUrl(images.url)}
-                                          className="imageDemoButton"
-                                      >
-                                          <img src={images.url} width="25px" alt="Buy now" />
-                                      </IconButton>
-                                  </Grid>
-                              ))
-                            : null}
-                    </Grid>
-                </div>
-
-                <div className="homeContainer_wrap">
-                    <Container align="left" className="homeContainer__content">
-                        <Typography
-                            align="left"
-                            style={{ color: "#4875ca", fontWeight: "500" }}
-                            variant="subtitle1"
-                            nowrap
+            {product ? (
+                <Container className={styles.home}>
+                    <div className="homeContainer_wrap">
+                        <Grid container align="center" justifyContent="center" style={{ height: "fit-content" }}>
+                            <img
+                                className="activeImg"
+                                src={activeImgUrl ? activeImgUrl : null}
+                                alt={product ? product.name : null}
+                            />
+                        </Grid>
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            className="activeImgWrapper"
                         >
-                            {product ? product.price.formatted_with_symbol : null}
-                        </Typography>
-                        <Typography
-                            align="left"
-                            style={{ fontWeight: "700", marginBottom: "1.5rem", color: "#222222" }}
-                            variant="h4"
-                        >
-                            {product ? product.name : null}
-                        </Typography>
-                        <Typography
-                            align="left"
-                            variant="subtitle1"
-                            style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
-                            nowrap
-                            dangerouslySetInnerHTML={{
-                                __html: product ? product.description : null,
-                            }}
-                        />
-                        <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
-                            <RadioGroup
-                                style={{ flexWrap: "nowrap" }}
-                                aria-label="colors"
-                                row
-                                className="radioGroup"
-                                name="colors"
-                                value={checkbox}
-                                onChange={handleChange}
+                            {product
+                                ? product.assets.map((images) => (
+                                      <Grid key={images.id} item zeroMinWidth>
+                                          <IconButton
+                                              onClick={() => setActiveImgUrl(images.url)}
+                                              className="imageDemoButton"
+                                          >
+                                              <img src={images.url} width="25px" alt="Buy now" />
+                                          </IconButton>
+                                      </Grid>
+                                  ))
+                                : null}
+                        </Grid>
+                    </div>
+
+                    <div className="homeContainer_wrap">
+                        <Container align="left" className="homeContainer__content">
+                            <Typography
+                                align="left"
+                                style={{ color: "#4875ca", fontWeight: "500" }}
+                                variant="subtitle1"
+                                nowrap
                             >
-                                <FormControlLabel value="color1" control={<Radio color="primary" />} label="" />
-                                <FormControlLabel value="color2" control={<Radio color="secondary" />} label="" />
-                                <FormControlLabel value="color3" control={<Radio color="primary" />} label="" />
-                                <FormControlLabel value="color4" control={<Radio color="default" />} label="" />
-                            </RadioGroup>
-                        </FormControl>
-                        <Button
-                            style={{
-                                background: "#2d3245",
-                                color: "#ffffff",
-                                boxShadow: "0px 15px 25px rgba(0,0,0,0.3)",
-                                padding: ".8rem 3.5rem",
-                                borderRadius: "0",
-                            }}
-                            variant="contained"
-                            size="large"
-                            title="Add To Cart"
-                            disabled={commerceHandling.itemAddedToCart ? true : false}
-                            onClick={() => {
-                                if (!commerceHandling.itemAddedToCart) {
-                                    commerceHandling.addToCart(product.id, 1);
-                                } else return;
-                            }}
-                        >
-                            {commerceHandling.itemAddedToCart ? "Added To Cart!" : "Add To Cart"}
-                        </Button>
-                    </Container>
-                </div>
-            </Container>
+                                {product ? product.price.formatted_with_symbol : null}
+                            </Typography>
+                            <Typography
+                                align="left"
+                                style={{ fontWeight: "700", marginBottom: "1.5rem", color: "#222222" }}
+                                variant="h4"
+                            >
+                                {product ? product.name : null}
+                            </Typography>
+                            <Typography
+                                align="left"
+                                variant="subtitle1"
+                                style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                nowrap
+                                dangerouslySetInnerHTML={{
+                                    __html: product ? product.description : null,
+                                }}
+                            />
+                            <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
+                                <RadioGroup
+                                    style={{ flexWrap: "nowrap" }}
+                                    aria-label="colors"
+                                    row
+                                    className="radioGroup"
+                                    name="colors"
+                                    value={checkbox}
+                                    onChange={handleChange}
+                                >
+                                    <FormControlLabel value="color1" control={<Radio color="primary" />} label="" />
+                                    <FormControlLabel value="color2" control={<Radio color="secondary" />} label="" />
+                                    <FormControlLabel value="color3" control={<Radio color="primary" />} label="" />
+                                    <FormControlLabel value="color4" control={<Radio color="default" />} label="" />
+                                </RadioGroup>
+                            </FormControl>
+                            <Button
+                                style={{
+                                    background: "#2d3245",
+                                    color: "#ffffff",
+                                    boxShadow: "0px 15px 25px rgba(0,0,0,0.3)",
+                                    padding: ".8rem 3.5rem",
+                                    borderRadius: "0",
+                                }}
+                                variant="contained"
+                                size="large"
+                                title="Add To Cart"
+                                disabled={commerceHandling.itemAddedToCart ? true : false}
+                                onClick={() => {
+                                    if (!commerceHandling.itemAddedToCart) {
+                                        commerceHandling.addToCart(product.id, 1);
+                                    } else return;
+                                }}
+                            >
+                                {commerceHandling.itemAddedToCart ? "Added To Cart!" : "Add To Cart"}
+                            </Button>
+                        </Container>
+                    </div>
+                </Container>
+            ) : null}
 
             <IconButton
                 onClick={() => {
-                    let path = `/product/${product.permalink}`;
+                    let path = `/products/${product.permalink}`;
                     history.push(path);
                 }}
                 title="Expand"

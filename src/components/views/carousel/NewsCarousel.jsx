@@ -18,7 +18,7 @@ import CompareArrowsIcon from "@material-ui/icons/CompareArrowsOutlined";
 
 import styles from "./styles.module.scss";
 
-function CarouselSlider() {
+function NewsCarousel() {
     const commerceHandling = useContext(CommerceHandler);
     const history = useHistory();
 
@@ -79,7 +79,7 @@ function CarouselSlider() {
                             <CardActionArea
                                 className={styles.carousel__cardActionArea}
                                 onClick={() => {
-                                    let path = `/product/${product.permalink}`;
+                                    let path = `/products/${product.permalink}`;
                                     history.push(path);
                                 }}
                             >
@@ -132,4 +132,4 @@ function CarouselSlider() {
     );
 }
 
-export default CarouselSlider;
+export default NewsCarousel;
