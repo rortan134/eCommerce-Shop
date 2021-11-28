@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { NavLink, Link } from "react-router-dom";
-import CommerceHandler from "./commerce-context";
-import { ReactComponent as Logo } from "../assets/logo.svg";
+import CommerceHandler from "../commerce-context";
+import { ReactComponent as Logo } from "../../assets/logo.svg";
 
 import { AppBar, IconButton, Grid, Menu, MenuItem, Typography, InputBase } from "@material-ui/core";
 
@@ -64,6 +64,7 @@ const useStyles = makeStyles({
     header__extended: {
         borderBottom: "solid 1px rgba(0,0,0,0.15)",
         padding: "0 5% 0 5%",
+        height: "75px",
     },
     iconButton: {
         padding: "0.4rem",

@@ -141,14 +141,15 @@ function Landing() {
             commerceHandling.products
                 ? commerceHandling.products.map((product) =>
                       product.attributes.filter((attribute) =>
-                          attribute.id === commerceHandling.landingProductAtt && attribute.value !== false
+                          commerceHandling.attributesExceptions.includes(attribute.id) === false &&
+                          attribute.value !== false
                               ? setProduct(product)
                               : null
                       )
                   )
                 : null;
         getLandingProduct();
-    }, [commerceHandling.products, commerceHandling.landingProductAtt]);
+    }, [commerceHandling.products, commerceHandling.attributesExceptions]);
 
     useEffect(() => {
         setActiveImgUrl(product ? product.image.url : null);
@@ -199,7 +200,7 @@ function Landing() {
                     </div>
 
                     <div className="homeContainer_wrap">
-                        <Container align="left" className="homeContainer__content">
+                        <Container className="homeContainer__content">
                             <Typography
                                 align="left"
                                 style={{ color: "#4875ca", fontWeight: "500" }}
@@ -217,8 +218,7 @@ function Landing() {
                             </Typography>
                             <Typography
                                 align="left"
-                                variant="subtitle1"
-                                style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                style={{ color: "#333333", marginBottom: "1.50rem", fontWeight: "300" }}
                                 nowrap
                                 dangerouslySetInnerHTML={{
                                     __html: product ? product.description : null,

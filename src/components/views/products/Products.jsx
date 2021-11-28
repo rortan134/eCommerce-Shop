@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import CommerceHandler from "../../shared/commerce-context";
 import Sidebar from "./Sidebar";
@@ -14,17 +14,18 @@ function Products() {
     const [priceRange, setPriceRange] = useState([0, 4000]);
     const [productFiltered, setFilteredProduct] = useState([]);
 
-    useEffect(() => {
+    const filterProducts = useCallback(() => {
         setFilteredProduct([]);
-        const filterProducts = () => {
-            commerceHandling.products.map((product) =>
-                product.price.raw >= priceRange[0] && product.price.raw <= priceRange[1]
-                    ? setFilteredProduct((prevArray) => [...prevArray, product])
-                    : null
-            );
-        };
+        commerceHandling.products.map((product) =>
+            product.price.raw >= priceRange[0] && product.price.raw <= priceRange[1]
+                ? setFilteredProduct((prevArray) => [...prevArray, product])
+                : null
+        );
+    }, [commerceHandling.products, priceRange]);
+
+    useEffect(() => {
         filterProducts();
-    }, [priceRange, commerceHandling.products]);
+    }, [commerceHandling.products])
 
     const handlePriceChange = (event, newValue) => {
         setPriceRange(newValue);
@@ -33,7 +34,11 @@ function Products() {
     return (
         <div className={styles.products_container}>
             <Box component="section" className={styles.products__flex__wrapper}>
-                <Sidebar handlePriceChange={handlePriceChange} priceRange={priceRange} />
+                <Sidebar
+                    handlePriceChange={handlePriceChange}
+                    filterProducts={filterProducts}
+                    priceRange={priceRange}
+                />
                 <Grid className={styles.ProductGridContainer} container wrap="wrap" direction="row">
                     {productFiltered.slice(0, 6).map((product) => (
                         <Grid key={product.id} item xs={12} sm={6}>

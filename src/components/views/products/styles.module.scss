@@ -46,20 +46,6 @@
                 margin-top: 1.2rem;
             }
         }
-        & .colorsGrid {
-            width: 100%;
-            & .gridChild {
-                margin-top: 10px;
-            }
-            & .sidebarColorsBox {
-                border-radius: 50%;
-                min-width: 25px;
-                min-height: 25px;
-                position: absolute;
-                box-shadow: 0px 0px 15px blue;
-                background-color: blue;
-            }
-        }
     }
 }
 .ProductGridContainer {

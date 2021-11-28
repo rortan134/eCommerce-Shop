@@ -20,7 +20,7 @@ import {
     Grid,
     Tabs,
     Tab,
-    Divider,
+    Divider
 } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -113,12 +113,12 @@ function ProductView({ match }) {
     const increaseQty = () => {
         if (productQty >= product.inventory.available && product.inventory.managed) {
             return;
-        } else if(productQty < 10) setProductQty(productQty + 1);
+        } else if(productQty < 10) setProductQty(qty => qty + 1);
     };
 
     const decreaseQty = () => {
         if (productQty !== 1) {
-            setProductQty(productQty - 1);
+            setProductQty(qty => qty - 1);
         }
     };
 
@@ -403,7 +403,7 @@ function ProductView({ match }) {
                             >
                                 {product.attributes
                                     ? product.attributes.map((attribute, index) =>
-                                          attribute.id !== commerceHandling.landingProductAtt ? (
+                                    commerceHandling.attributesExceptions.includes(attribute.id) === false ? (
                                               <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
                                           ) : null
                                       )

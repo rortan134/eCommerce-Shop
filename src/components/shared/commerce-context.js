@@ -14,9 +14,11 @@ const CommerceHandler = createContext({
     order: {},
     errorMessage: "",
     currentShipping: null,
-    landingProductAtt: "attr_gNXELwj1rl3A4p",
+    attributesExceptions: ["attr_gNXELwj1rl3A4p", "new-in", "attr_LkpnNwAqawmXB3"],
     merchant: {},
+    
 });
+
 
 export function CommerceProvider(props) {
     const [cart, setCart] = useState({});
@@ -29,7 +31,7 @@ export function CommerceProvider(props) {
     const [errorMessage, setErrorMessage] = useState("");
     const [currentShipping, setCurrentShipping] = useState();
     const [categories, setCategories] = useState({});
-    const [landingProductAtt, setLandingProductAtt] = useState("attr_gNXELwj1rl3A4p");
+    const [attributesExceptions, setAttributesExceptions] = useState(["attr_gNXELwj1rl3A4p", "new-in", "attr_LkpnNwAqawmXB3"]);
     const [merchant, setMerchant] = useState({});
 
     const fetchMerchantHandler = async () => {
@@ -128,7 +130,7 @@ export function CommerceProvider(props) {
         checkoutToken: checkoutToken,
         currentShipping: currentShipping,
         productCategories: categories,
-        landingProductAtt: landingProductAtt,
+        attributesExceptions: attributesExceptions,
         merchant: merchant,
 
         order: order,
@@ -139,6 +141,7 @@ export function CommerceProvider(props) {
         fetchProducts: fetchProductsHandler,
         fetchCategories: fetchProductCategories,
         fetchCart: fetchCartHandler,
+        
 
         addToCart: handleAddToCart,
         removeFromCart: handleRemoveFromCart,

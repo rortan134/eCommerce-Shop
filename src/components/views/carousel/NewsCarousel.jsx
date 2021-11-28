@@ -34,7 +34,7 @@ function NewsCarousel() {
             slidesToSlide: 2,
         },
         tablet: {
-            breakpoint: { max: 1024, min: 550 },
+            breakpoint: { max: 1200, min: 550 },
             items: 3,
         },
         mobile: {
@@ -75,7 +75,7 @@ function NewsCarousel() {
                     containerClass={styles.carousel__container}
                 >
                     {commerceHandling.products.map((product) => (
-                        <Paper className={styles.carousel__card} key={product.id} item xs={12} sm={6}>
+                        <Paper className={styles.carousel__card} key={product.id} xs={12} sm={6}>
                             <CardActionArea
                                 className={styles.carousel__cardActionArea}
                                 onClick={() => {
