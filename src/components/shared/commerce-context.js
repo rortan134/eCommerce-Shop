@@ -1,5 +1,5 @@
 import { commerce } from "../../lib/commerce";
-import { createContext, useState, useReducer, useEffect } from "react";
+import { createContext, useState, useReducer, useEffect, useCallback } from "react";
 
 const CommerceHandler = createContext({
     cart: {},
@@ -16,6 +16,7 @@ const CommerceHandler = createContext({
     currentShipping: null,
     attributesExceptions: ["attr_gNXELwj1rl3A4p", "new-in", "attr_LkpnNwAqawmXB3"],
     merchant: {},
+    estimatedLocation: {},
 });
 
 const reducerActions = {
@@ -69,6 +70,7 @@ export function CommerceProvider(props) {
     const [order, setOrder] = useState({});
     const [errorMessage, setErrorMessage] = useState("");
     const [currentShipping, setCurrentShipping] = useState();
+    const [estimatedLocation, setEstimatedLocation] = useState({});
 
     const [attributesExceptions, setAttributesExceptions] = useState([
         "attr_gNXELwj1rl3A4p",
@@ -96,28 +98,26 @@ export function CommerceProvider(props) {
         fetchMerchantHandler();
         const fetchCartHandler = async () => {
             const data = await commerce.cart.retrieve();
-            dispatch({ type: reducerActions.UPDATE_CART, payload: data })
+            dispatch({ type: reducerActions.UPDATE_CART, payload: data });
         };
         fetchCartHandler();
     }, []);
 
-    
-
     // Cart Handlers
     const handleAddToCart = async (productId, quantity) => {
         const { cart } = await commerce.cart.add(productId, quantity);
-        dispatch({ type: reducerActions.UPDATE_MERCHANT, payload: cart });
+        dispatch({ type: reducerActions.UPDATE_CART, payload: cart });
         setItemAddedToCart(productId);
     };
 
     const handleRemoveFromCart = async (productId) => {
         const { cart } = await commerce.cart.remove(productId);
-        dispatch({ type: reducerActions.DEFINE_CART, payload: cart });
+        dispatch({ type: reducerActions.UPDATE_CART, payload: cart });
     };
 
     const handleUpdateCartQty = async (productId, quantity) => {
         const { cart } = await commerce.cart.update(productId, { quantity });
-        dispatch({ type: reducerActions.DEFINE_CART, payload: cart });
+        dispatch({ type: reducerActions.UPDATE_CART, payload: cart });
     };
 
     const refreshCart = async () => {
@@ -130,22 +130,16 @@ export function CommerceProvider(props) {
     }
 
     // Checkout Handlers
-    const generateToken = async () => {
-        try {
-            const token = await commerce.checkout.generateToken(callback.cart.id, { type: "cart" });
-            setCheckoutToken(token);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const checkoutNextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    const checkoutBackStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
-
-    const checkoutNext = (data) => {
-        setShippingData(data);
-        checkoutNextStep();
-    };
+    const generateToken = useCallback(async () => {
+        if (callback.cart.id)
+            try {
+                const token = await commerce.checkout.generateToken(callback.cart.id, { type: "cart" });
+                setCheckoutToken(token);
+                console.log("token created");
+            } catch (error) {
+                console.log(error);
+            }
+    }, [callback.cart.id]);
 
     const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
         try {
@@ -157,16 +151,30 @@ export function CommerceProvider(props) {
         }
     };
 
-    const handleShippingMethod = async (checkoutTokenId, currMethod, methods) => {
-        await commerce.checkout
-            .checkShippingOption(checkoutTokenId, {
-                shipping_option_id: currMethod.shippingOption,
-                country: currMethod.shippingCountry,
-                region: currMethod.shippingState,
-            })
-            .then((data) => {
-                setCurrentShipping(data);
-            });
+    const handleShippingMethod = useCallback(async () => {
+        if (checkoutToken.id && shippingData)
+            await commerce.checkout
+                .checkShippingOption(checkoutToken.id, {
+                    shipping_option_id: shippingData.shippingOption,
+                    country: shippingData.shippingCountry,
+                    region: shippingData.shippingState,
+                })
+                .then((data) => {
+                    setCurrentShipping(data);
+                });
+                console.log("called")
+    }, [checkoutToken, shippingData]);
+
+    const getShippingLocationFromIp = (checkoutTokenId, ip) => {
+        commerce.checkout.getLocationFromIP(checkoutTokenId, ip).then((adress) => setEstimatedLocation(adress));
+    };
+
+    const checkoutNextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    const checkoutBackStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
+
+    const checkoutProceed = (data) => {
+        setShippingData(data);
+        checkoutNextStep();
     };
 
     // Export variables
@@ -187,6 +195,8 @@ export function CommerceProvider(props) {
         order: order,
         onCaptureCheckout: handleCaptureCheckout,
         error: errorMessage,
+        getShippingLocationFromIp: getShippingLocationFromIp,
+        estimatedLocation: estimatedLocation,
 
         addToCart: handleAddToCart,
         removeFromCart: handleRemoveFromCart,
@@ -198,7 +208,7 @@ export function CommerceProvider(props) {
         generateToken: generateToken,
         handleShippingMethod: handleShippingMethod,
         setStep: setActiveStep,
-        checkoutNext: checkoutNext,
+        checkoutProceed: checkoutProceed,
         checkoutNextStep: checkoutNextStep,
         checkoutBackStep: checkoutBackStep,
     };

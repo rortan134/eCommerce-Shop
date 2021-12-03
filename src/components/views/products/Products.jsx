@@ -25,7 +25,7 @@ function Products() {
 
     useEffect(() => {
         filterProducts();
-    }, [commerceHandling.products])
+    }, [commerceHandling.products]);
 
     const handlePriceChange = (event, newValue) => {
         setPriceRange(newValue);

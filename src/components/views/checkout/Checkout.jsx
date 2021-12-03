@@ -38,17 +38,18 @@ const steps = ["1. Checkout", "2. Payment", "3. Confirmation"];
 
 function Checkout() {
     const commerceHandling = useContext(CommerceHandler);
+    const { generateToken } = useContext(CommerceHandler);
     const [cartIsEmpty, setCartIsEmpty] = useState(false);
 
     useEffect(() => {
-        commerceHandling.generateToken();
         const checkIfCartIsEmpty = () => {
             if (commerceHandling.cart.line_items && commerceHandling.cart.line_items.length === 0) {
                 setCartIsEmpty(true);
             }
         };
+        generateToken();
         checkIfCartIsEmpty();
-    }, [commerceHandling.cart]);
+    }, [generateToken, commerceHandling.cart]);
 
     const Form = () =>
         commerceHandling.activeStep === 0 ? (
@@ -165,7 +166,7 @@ function Checkout() {
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="body1">Shipping Adress</Typography>
                                 <Typography variant="body1">
-                                    {commerceHandling.shippingData.shippingCountry}, 
+                                    {commerceHandling.shippingData.shippingCountry},
                                     {commerceHandling.shippingData.shippingAdress}, <br />
                                     {commerceHandling.shippingData.zipCode}
                                 </Typography>

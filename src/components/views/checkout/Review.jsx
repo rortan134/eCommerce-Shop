@@ -1,7 +1,6 @@
 import { Typography, List, ListItem, ListItemText, Paper, Divider, Grid, Button } from "@material-ui/core";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import CommerceHandler from "../../shared/commerce-context";
-
 import styles from "./styles.module.scss";
 
 function Review() {
@@ -17,22 +16,8 @@ function Review() {
           }))
         : null;
 
-    useEffect(() => {
-        if (commerceHandling.checkoutToken) {
-            commerceHandling.handleShippingMethod(
-                commerceHandling.checkoutToken.id,
-                commerceHandling.shippingData,
-                commerceHandling.checkoutToken.shipping_methods,
-            );
-        }
-        console.log("called")
-    }, [commerceHandling.checkoutToken, commerceHandling.shippingData]);
-
     return commerceHandling.checkoutToken ? (
         <>
-        {console.log(commerceHandling.currentShipping)}
-        {console.log(commerceHandling.checkoutToken.live)}
-
             <Paper className={styles.review_paperWrapper}>
                 <Typography variant="h6" gutterBottom>
                     Order Review
@@ -64,7 +49,11 @@ function Review() {
                     ) : null}
                     <Grid item container xs={12} justifyContent="space-between">
                         <Typography variant="subtitle1">Subtotal</Typography>
-                        <Typography>{commerceHandling.currentShipping ? commerceHandling.currentShipping.live.subtotal.formatted_with_symbol : commerceHandling.checkoutToken.live.subtotal.formatted_with_symbol}</Typography>
+                        <Typography>
+                            {commerceHandling.currentShipping
+                                ? commerceHandling.currentShipping.live.subtotal.formatted_with_symbol
+                                : commerceHandling.checkoutToken.live.subtotal.formatted_with_symbol}
+                        </Typography>
                     </Grid>
                     <Grid item container xs={12} justifyContent="space-between">
                         <Typography variant="subtitle1">Promo Code</Typography>
@@ -79,7 +68,11 @@ function Review() {
                     <Divider variant="middle" style={{ backgroundColor: "rgba(0,0,0, .3)", width: "100%" }} />
                     <Grid item container xs={12} justifyContent="space-between">
                         <Typography variant="h6">Grand Total</Typography>
-                        <Typography variant="h6">{commerceHandling.currentShipping ? commerceHandling.currentShipping.live.total.formatted_with_symbol : commerceHandling.checkoutToken.live.total.formatted_with_symbol}</Typography>
+                        <Typography variant="h6">
+                            {commerceHandling.currentShipping
+                                ? commerceHandling.currentShipping.live.total.formatted_with_symbol
+                                : commerceHandling.checkoutToken.live.total.formatted_with_symbol}
+                        </Typography>
                     </Grid>
                 </Grid>
             </Paper>

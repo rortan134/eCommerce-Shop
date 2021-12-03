@@ -5,11 +5,13 @@ import { useForm, FormProvider } from "react-hook-form";
 import CustomTextField from "./CustomTextField";
 import { Link } from "react-router-dom";
 import CommerceHandler from "../../shared/commerce-context";
+// import useUserIp from "../../shared/utils/useUserIp";
 
 import styles from "./styles.module.scss";
 
 function AdressForm({ checkoutToken }) {
     const commerceHandling = useContext(CommerceHandler);
+    // const { getShippingLocationFromIp } = useContext(CommerceHandler);
 
     const [shippingCountries, setShippingCountries] = useState([]);
     const [shippingCountry, setShippingCountry] = useState("");
@@ -27,35 +29,32 @@ function AdressForm({ checkoutToken }) {
         label: `${sO.description} - (${sO.price.formatted_with_symbol})`,
     }));
 
-    const fetchShippingCountries = async (checkoutTokenId) => {
-        const { countries } = await commerce.services.localeListShippingCountries(checkoutTokenId);
-        setShippingCountries(countries);
-        setShippingCountry(Object.keys(countries)[0]);
-    };
-
-    const fetchSubdivisions = async (countryCode) => {
-        const { subdivisions } = await commerce.services.localeListSubdivisions(countryCode);
-        setShippingStates(subdivisions);
-        setShippingState(Object.keys(subdivisions)[0]);
-    };
-
-    const fetchShippingOptions = async (checkoutTokenId, country, region = null) => {
-        const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region });
-        setShippingOptions(options);
-        setShippingOption(options[0].id);
-    };
-
     useEffect(() => {
+        const fetchShippingCountries = async (checkoutTokenId) => {
+            const { countries } = await commerce.services.localeListShippingCountries(checkoutTokenId);
+            setShippingCountries(countries);
+            setShippingCountry(Object.keys(countries)[0]);
+        };
         fetchShippingCountries(checkoutToken.id);
     }, [checkoutToken.id]);
 
     useEffect(() => {
-        if (shippingCountry) fetchSubdivisions(shippingCountry);
+        const fetchSubdivisions = async (countryCode) => {
+            const { subdivisions } = await commerce.services.localeListSubdivisions(countryCode);
+            setShippingStates(subdivisions);
+            setShippingState(Object.keys(subdivisions)[0]);
+        };
+        fetchSubdivisions(shippingCountry);
     }, [shippingCountry]);
 
     useEffect(() => {
-        if (shippingState) fetchShippingOptions(checkoutToken.id, shippingCountry, shippingState);
-    }, [shippingState]);
+        const fetchShippingOptions = async (checkoutTokenId, country, region) => {
+            const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region });
+            setShippingOptions(options);
+            setShippingOption(options[0].id);
+        };
+        if (shippingCountry && shippingState) fetchShippingOptions(checkoutToken.id, shippingCountry, shippingState);
+    }, [shippingState, checkoutToken.id, shippingCountry]);
 
     return (
         <>
@@ -66,12 +65,14 @@ function AdressForm({ checkoutToken }) {
                     </Typography>
                     <FormProvider {...methods}>
                         <form
-                            onSubmit={methods.handleSubmit((data) => commerceHandling.checkoutNext({
-                                ...data,
-                                shippingCountry,
-                                shippingState,
-                                shippingOption,
-                            }))}
+                            onSubmit={methods.handleSubmit((data) =>
+                                commerceHandling.checkoutProceed({
+                                    ...data,
+                                    shippingCountry,
+                                    shippingState,
+                                    shippingOption,
+                                })
+                            )}
                         >
                             <Grid container alignItems="center" className={styles.innerFormWrapper}>
                                 <CustomTextField name="fullName" label="Fullname" />

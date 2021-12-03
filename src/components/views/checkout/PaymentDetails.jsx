@@ -5,6 +5,7 @@ import styles from "./styles.module.scss";
 
 function PaymentDetails() {
     const commerceHandling = useContext(CommerceHandler);
+    const { handleShippingMethod } = useContext(CommerceHandler);
     const [purchaseDate, setPurchaseDate] = useState();
 
     useEffect(() => {
@@ -23,6 +24,10 @@ function PaymentDetails() {
             myCurrentDate.getSeconds();
         setPurchaseDate(date);
     }, []);
+
+    useEffect(() => {
+        handleShippingMethod();
+    }, [handleShippingMethod]);
 
     return (
         <>
