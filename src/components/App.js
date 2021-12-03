@@ -2,7 +2,7 @@
 import { Switch, Route } from "react-router-dom";
 
 // Dependencies
-import { useEffect, useContext, useCallback } from "react";
+import { useContext } from "react";
 import CommerceHandler from "./shared/commerce-context";
 
 // Components
@@ -21,54 +21,46 @@ import NotFound from "./views/NotFound";
 function App() {
     const commerceHandling = useContext(CommerceHandler);
 
-    const fetchCommerce = useCallback(() => {
-        commerceHandling.fetchProducts();
-        commerceHandling.fetchCategories();
-        commerceHandling.fetchCart();
-        commerceHandling.fetchMerchant();
-    }, []);
-
-    useEffect(() => {
-        fetchCommerce();
-    }, [fetchCommerce]);
-
     return (
         <>
-            {/* Utility Components */}
-            <Header />
-            <SnackBar />
+                    <Header />
+                    <SnackBar />
 
-            {/* Main Components */}
-            <Switch>
-                <Route path="/cart" component={Cart} />
+                    <Switch>
+                        <Route path="/cart" component={Cart} />
 
-                <Route path="/products/:permalink" exact component={ProductView} />
+                        <Route path="/products/:permalink" exact component={ProductView} />
 
-                <Route path="/" exact>
-                    <Home />
-                    <CustomCards />
-                    <NewsCarousel />
-                    <Products />
-                </Route>
+                        <Route path="/" exact>
+                            <Home />
+                            <CustomCards />
+                            <NewsCarousel />
+                            <Products />
+                        </Route>
 
-                <Route path="/news">
-                    <h1>news</h1>
-                </Route>
+                        <Route path="/news">
+                            <h1>news</h1>
+                        </Route>
 
-                <Route path="/products">
-                    <h1>our products</h1>
-                </Route>
+                        <Route path="/products">
+                            <h1>our products</h1>
+                        </Route>
 
-                <Route path="/favorites">
-                    <h1>favorites</h1>
-                </Route>
+                        <Route path="/favorites">
+                            <h1>favorites</h1>
+                        </Route>
 
-                <Route path="/checkout" exact component={Checkout} onLeave={() => commerceHandling.setStep(0)} />
+                        <Route
+                            path="/checkout"
+                            exact
+                            component={Checkout}
+                            onLeave={() => commerceHandling.setStep(0)}
+                        />
 
-                <Route path="*" component={NotFound} />
-            </Switch>
+                        <Route path="*" component={NotFound} />
+                    </Switch>
 
-            <Footer />
+                    <Footer />
         </>
     );
 }

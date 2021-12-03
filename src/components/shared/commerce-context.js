@@ -1,5 +1,5 @@
 import { commerce } from "../../lib/commerce";
-import { createContext, useState } from "react";
+import { createContext, useState, useReducer, useEffect } from "react";
 
 const CommerceHandler = createContext({
     cart: {},
@@ -16,13 +16,52 @@ const CommerceHandler = createContext({
     currentShipping: null,
     attributesExceptions: ["attr_gNXELwj1rl3A4p", "new-in", "attr_LkpnNwAqawmXB3"],
     merchant: {},
-    
 });
 
+const reducerActions = {
+    UPDATE_PRODUCTS: "update-products",
+    UPDATE_CATEGORIES: "update-categories",
+    UPDATE_CART: "update-cart",
+    UPDATE_MERCHANT: "update-merchant",
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case reducerActions.UPDATE_PRODUCTS:
+            return {
+                ...state,
+                products: [...state.products, action.payload],
+            };
+        case reducerActions.UPDATE_CATEGORIES:
+            return {
+                ...state,
+                categories: action.payload,
+            };
+        case reducerActions.UPDATE_CART:
+            return {
+                ...state,
+                cart: action.payload,
+            };
+        case reducerActions.UPDATE_MERCHANT:
+            return {
+                ...state,
+                merchant: action.payload,
+            };
+        default:
+            return {
+                ...state,
+            };
+    }
+}
 
 export function CommerceProvider(props) {
-    const [cart, setCart] = useState({});
-    const [products, setProducts] = useState([]);
+    const [callback, dispatch] = useReducer(reducer, {
+        cart: [],
+        products: [],
+        categories: {},
+        merchant: {},
+    });
+
     const [itemAddedToCart, setItemAddedToCart] = useState(undefined);
     const [shippingData, setShippingData] = useState({});
     const [checkoutToken, setCheckoutToken] = useState(null);
@@ -30,60 +69,70 @@ export function CommerceProvider(props) {
     const [order, setOrder] = useState({});
     const [errorMessage, setErrorMessage] = useState("");
     const [currentShipping, setCurrentShipping] = useState();
-    const [categories, setCategories] = useState({});
-    const [attributesExceptions, setAttributesExceptions] = useState(["attr_gNXELwj1rl3A4p", "new-in", "attr_LkpnNwAqawmXB3"]);
-    const [merchant, setMerchant] = useState({});
 
-    const fetchMerchantHandler = async () => {
-        const data = await commerce.merchants.about();
-        setMerchant(data.data[0]);
-    };
+    const [attributesExceptions, setAttributesExceptions] = useState([
+        "attr_gNXELwj1rl3A4p",
+        "new-in",
+        "attr_LkpnNwAqawmXB3",
+    ]);
 
-    // Fetch Items
-    const fetchProductsHandler = async () => {
-        const { data } = await commerce.products.list();
-        data.map((product) => (product.active ? setProducts((prevArray) => [...prevArray, product]) : null));
-    };
+    useEffect(() => {
+        const fetchProductsHandler = async () => {
+            const { data } = await commerce.products.list();
+            data.map((product) =>
+                product.active ? dispatch({ type: reducerActions.UPDATE_PRODUCTS, payload: product }) : null
+            );
+        };
+        fetchProductsHandler();
+        const fetchProductCategories = async () => {
+            const { data } = await commerce.categories.list();
+            dispatch({ type: reducerActions.UPDATE_CATEGORIES, payload: data });
+        };
+        fetchProductCategories();
+        const fetchMerchantHandler = async () => {
+            const data = await commerce.merchants.about();
+            dispatch({ type: reducerActions.UPDATE_MERCHANT, payload: data });
+        };
+        fetchMerchantHandler();
+        const fetchCartHandler = async () => {
+            const data = await commerce.cart.retrieve();
+            dispatch({ type: reducerActions.UPDATE_CART, payload: data })
+        };
+        fetchCartHandler();
+    }, []);
 
-    const fetchProductCategories = async () => {
-        const { data } = await commerce.categories.list();
-        setCategories(data);
-    };
+    
 
     // Cart Handlers
-    const fetchCartHandler = async () => {
-        setCart(await commerce.cart.retrieve());
-    };
-
     const handleAddToCart = async (productId, quantity) => {
         const { cart } = await commerce.cart.add(productId, quantity);
-        setCart(cart);
+        dispatch({ type: reducerActions.UPDATE_MERCHANT, payload: cart });
         setItemAddedToCart(productId);
+    };
+
+    const handleRemoveFromCart = async (productId) => {
+        const { cart } = await commerce.cart.remove(productId);
+        dispatch({ type: reducerActions.DEFINE_CART, payload: cart });
+    };
+
+    const handleUpdateCartQty = async (productId, quantity) => {
+        const { cart } = await commerce.cart.update(productId, { quantity });
+        dispatch({ type: reducerActions.DEFINE_CART, payload: cart });
+    };
+
+    const refreshCart = async () => {
+        const newCart = await commerce.cart.refresh();
+        dispatch({ type: reducerActions.UPDATE_CART, payload: newCart });
     };
 
     function removeItemAddedWarning() {
         setItemAddedToCart(undefined);
     }
 
-    const handleRemoveFromCart = async (productId) => {
-        const { cart } = await commerce.cart.remove(productId);
-        setCart(cart);
-    };
-
-    const handleUpdateCartQty = async (productId, quantity) => {
-        const { cart } = await commerce.cart.update(productId, { quantity });
-        setCart(cart);
-    };
-
-    const refreshCart = async () => {
-        const newCart = await commerce.cart.refresh();
-        setCart(newCart);
-    };
-
     // Checkout Handlers
     const generateToken = async () => {
         try {
-            const token = await commerce.checkout.generateToken(cart.id, { type: "cart" });
+            const token = await commerce.checkout.generateToken(callback.cart.id, { type: "cart" });
             setCheckoutToken(token);
         } catch (error) {
             console.log(error);
@@ -122,26 +171,22 @@ export function CommerceProvider(props) {
 
     // Export variables
     const commerceContext = {
-        cart: cart,
-        cartQty: cart.total_items,
-        products: products,
+        cart: callback.cart,
+        merchant: callback.merchant,
+        products: callback.products,
+        productCategories: callback.categories,
+        cartQty: callback.cart.line_items ? callback.cart.line_items.length : 0,
+
         activeStep: activeStep,
         shippingData: shippingData,
         checkoutToken: checkoutToken,
         currentShipping: currentShipping,
-        productCategories: categories,
+
         attributesExceptions: attributesExceptions,
-        merchant: merchant,
 
         order: order,
         onCaptureCheckout: handleCaptureCheckout,
         error: errorMessage,
-
-        fetchMerchant: fetchMerchantHandler,
-        fetchProducts: fetchProductsHandler,
-        fetchCategories: fetchProductCategories,
-        fetchCart: fetchCartHandler,
-        
 
         addToCart: handleAddToCart,
         removeFromCart: handleRemoveFromCart,

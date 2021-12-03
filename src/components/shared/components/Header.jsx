@@ -244,7 +244,7 @@ function Header() {
                             <Grid container justifyContent="space-evenly" alignItems="center">
                                 <LocalMallOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
                                 <Typography variant="body2">
-                                    {commerceHandling.cart.line_items ? commerceHandling.cart.line_items.length : null}
+                                    {commerceHandling.cartQty ? commerceHandling.cartQty : null}
                                 </Typography>
                             </Grid>
                         </IconButton>
