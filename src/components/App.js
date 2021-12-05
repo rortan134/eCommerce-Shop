@@ -1,10 +1,6 @@
 // Routing
 import { Switch, Route } from "react-router-dom";
 
-// Dependencies
-import { useContext } from "react";
-import CommerceHandler from "./shared/commerce-context";
-
 // Components
 import Home from "./views/home/Home";
 import Header from "./shared/components/Header";
@@ -19,7 +15,6 @@ import Footer from "./shared/components/Footer";
 import NotFound from "./views/NotFound";
 
 function App() {
-    const commerceHandling = useContext(CommerceHandler);
 
     return (
         <>
@@ -28,30 +23,23 @@ function App() {
 
             <Switch>
                 <Route path="/cart" component={Cart} />
-
                 <Route path="/products/:permalink" exact component={ProductView} />
-
                 <Route path="/" exact>
                     <Home />
                     <CustomCards />
                     <NewsCarousel />
                     <Products />
                 </Route>
-
                 <Route path="/news">
                     <h1>news</h1>
                 </Route>
-
                 <Route path="/products">
                     <h1>our products</h1>
                 </Route>
-
                 <Route path="/favorites">
                     <h1>favorites</h1>
                 </Route>
-
-                <Route path="/checkout" exact component={Checkout} onLeave={() => commerceHandling.setStep(0)} />
-
+                <Route path="/checkout" exact component={Checkout} />
                 <Route path="*" component={NotFound} />
             </Switch>
 

@@ -1,6 +1,5 @@
 import Carousel from "react-multi-carousel";
-import { useContext, useState, useEffect } from "react";
-import CommerceHandler from "../../shared/commerce-context";
+import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Typography, CardActionArea, Button, Grid, Container } from "@material-ui/core";
@@ -89,7 +88,7 @@ const useStyles = makeStyles({
 function CustomCards() {
     const classes = useStyles();
     const history = useHistory();
-    
+
     const products = useProducts("category_slug", "new-in");
 
     const [productsLength, setProductsLength] = useState({});

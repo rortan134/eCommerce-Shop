@@ -74,58 +74,60 @@ function NewsCarousel() {
                     transitionDuration={500}
                     containerClass={styles.carousel__container}
                 >
-                    {commerceHandling.products.map((product) => (
-                        <Paper className={styles.carousel__card} key={product.id} xs={12} sm={6}>
-                            <CardActionArea
-                                className={styles.carousel__cardActionArea}
-                                onClick={() => {
-                                    let path = `/products/${product.permalink}`;
-                                    history.push(path);
-                                }}
-                            >
-                                <div className={styles.carousel__cardImageWrapper}>
-                                    <img src={product.image.url} alt="product" />
-                                </div>
-                                <CardContent className={styles.carousel__content}>
-                                    <Typography
-                                        style={{ display: "inline", color: "rgb(45, 85, 158)" }}
-                                        gutterBottom
-                                        variant="subtitle2"
-                                    >
-                                        {product.price.raw + " €"}
-                                    </Typography>
-                                    <Typography variant="body2">{product.name}</Typography>
-                                    <Typography
-                                        dangerouslySetInnerHTML={{
-                                            __html: product.description,
-                                        }}
-                                        align="left"
-                                        style={{ color: "#555555", fontWeight: "300" }}
-                                        variant="caption"
-                                        nowrap
-                                    />
-                                </CardContent>
-                            </CardActionArea>
-                            <ButtonGroup className={styles.carousel__card__actionButtons}>
-                                <Button>
-                                    <FavoriteBorderIcon />
-                                </Button>
-                                <Button
-                                    onClick={() => {
-                                        if (!commerceHandling.itemAddedToCart) {
-                                            addToCartClickedHandler(product.id);
-                                            commerceHandling.addToCart(product.id, 1);
-                                        } else return;
-                                    }}
-                                >
-                                    {addToCartClicked === product.id ? "Added To Cart!" : "Add To Cart"}
-                                </Button>
-                                <Button>
-                                    <CompareArrowsIcon />
-                                </Button>
-                            </ButtonGroup>
-                        </Paper>
-                    ))}
+                    {commerceHandling.products
+                        ? commerceHandling.products.map((product) => (
+                              <Paper className={styles.carousel__card} key={product.id} xs={12} sm={6}>
+                                  <CardActionArea
+                                      className={styles.carousel__cardActionArea}
+                                      onClick={() => {
+                                          let path = `/products/${product.permalink}`;
+                                          history.push(path);
+                                      }}
+                                  >
+                                      <div className={styles.carousel__cardImageWrapper}>
+                                          <img src={product.image.url} alt="product" />
+                                      </div>
+                                      <CardContent className={styles.carousel__content}>
+                                          <Typography
+                                              style={{ display: "inline", color: "rgb(45, 85, 158)" }}
+                                              gutterBottom
+                                              variant="subtitle2"
+                                          >
+                                              {product.price.raw + " €"}
+                                          </Typography>
+                                          <Typography variant="body2">{product.name}</Typography>
+                                          <Typography
+                                              dangerouslySetInnerHTML={{
+                                                  __html: product.description,
+                                              }}
+                                              align="left"
+                                              style={{ color: "#555555", fontWeight: "300" }}
+                                              variant="caption"
+                                              nowrap
+                                          />
+                                      </CardContent>
+                                  </CardActionArea>
+                                  <ButtonGroup className={styles.carousel__card__actionButtons}>
+                                      <Button>
+                                          <FavoriteBorderIcon />
+                                      </Button>
+                                      <Button
+                                          onClick={() => {
+                                              if (!commerceHandling.itemAddedToCart) {
+                                                  addToCartClickedHandler(product.id);
+                                                  commerceHandling.addToCart(product.id, 1);
+                                              } else return;
+                                          }}
+                                      >
+                                          {addToCartClicked === product.id ? "Added To Cart!" : "Add To Cart"}
+                                      </Button>
+                                      <Button>
+                                          <CompareArrowsIcon />
+                                      </Button>
+                                  </ButtonGroup>
+                              </Paper>
+                          ))
+                        : null}
                 </Carousel>
             </Container>
         </div>

@@ -1,5 +1,6 @@
 import { commerce } from "../../lib/commerce";
 import { createContext, useState, useReducer, useEffect, useCallback } from "react";
+import useProducts from "./utils/useProducts";
 
 const CommerceHandler = createContext({
     cart: {},
@@ -31,7 +32,7 @@ function reducer(state, action) {
         case reducerActions.UPDATE_PRODUCTS:
             return {
                 ...state,
-                products: [...state.products, action.payload],
+                products: action.payload,
             };
         case reducerActions.UPDATE_CATEGORIES:
             return {
@@ -76,10 +77,10 @@ export function CommerceProvider(props) {
 
     useEffect(() => {
         const fetchProductsHandler = async () => {
-            const { data } = await commerce.products.list();
-            data.map((product) =>
-                product.active ? dispatch({ type: reducerActions.UPDATE_PRODUCTS, payload: product }) : null
-            );
+            const data = await commerce.products.list({
+                active: 1,
+            });
+            dispatch({ type: reducerActions.UPDATE_PRODUCTS, payload: data.data });
         };
         fetchProductsHandler();
         const fetchProductCategories = async () => {
@@ -146,17 +147,18 @@ export function CommerceProvider(props) {
         }
     };
 
-    const handleShippingMethod = async () => {
-        if (checkoutToken.id && shippingData)
+    const handleShippingMethod = async (checkoutTokenId, shipping) => {
+        if (checkoutToken.id && shippingData) {
             await commerce.checkout
-                .checkShippingOption(checkoutToken.id, {
-                    shipping_option_id: shippingData.shippingOption,
-                    country: shippingData.shippingCountry,
-                    region: shippingData.shippingState,
+                .checkShippingOption(checkoutTokenId, {
+                    shipping_option_id: shipping.shippingOption,
+                    country: shipping.shippingCountry,
+                    region: shipping.shippingState,
                 })
                 .then((data) => {
                     setCurrentShipping(data);
                 });
+        }
     };
 
     const getShippingLocationFromIp = (checkoutTokenId, ip) => {
@@ -168,7 +170,7 @@ export function CommerceProvider(props) {
 
     const checkoutProceed = (data) => {
         setShippingData(data);
-        handleShippingMethod();
+        handleShippingMethod(checkoutToken.id, data);
         checkoutNextStep();
     };
 

@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import CommerceHandler from "../../shared/commerce-context";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
-
+import useProducts from "../../shared/utils/useProducts";
 import {
     Button,
     Radio,
@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core";
 
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import { commerce } from "../../../lib/commerce";
 
 const useStyles = makeStyles({
     root: {
@@ -129,11 +130,12 @@ const useStyles = makeStyles({
 
 function Landing() {
     const styles = useStyles();
-
     const commerceHandling = useContext(CommerceHandler);
     const history = useHistory();
 
+    // const product = useProducts();
     const [activeImgUrl, setActiveImgUrl] = useState();
+
     const [product, setProduct] = useState(null);
 
     useEffect(() => {
@@ -151,6 +153,11 @@ function Landing() {
         getLandingProduct();
     }, [commerceHandling.products, commerceHandling.attributesExceptions]);
 
+    // useEffect(() => {
+    //     commerce.products.list({attributes: "attr_gNXELwj1rl3A4p"}).then((data) => console.log(data));
+    //     console.log(product);
+    // }, [product]);
+
     useEffect(() => {
         setActiveImgUrl(product ? product.image.url : null);
     }, [product]);
@@ -167,7 +174,7 @@ function Landing() {
                 <div className="orb__gradient orb__gradient__2" />
                 <div className="orb__gradient orb__gradient__3" />
             </Container>
-            {product ? (
+            {product !== undefined ? (
                 <Container className={styles.home}>
                     <div className="homeContainer_wrap">
                         <Grid container align="center" justifyContent="center" style={{ height: "fit-content" }}>

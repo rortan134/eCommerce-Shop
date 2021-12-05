@@ -37,14 +37,12 @@ function AdressForm({ checkoutToken }) {
             const { countries } = await commerce.services.localeListShippingCountries(checkoutTokenId);
             if (mounted) {
                 setloading(false);
+                setShippingCountries(countries);
+                setShippingCountry(Object.keys(countries)[0]);
             }
-            setShippingCountries(countries);
-            setShippingCountry(Object.keys(countries)[0]);
         };
         fetchShippingCountries(checkoutToken.id);
-        return function cleanup() {
-            mounted = false;
-        };
+        return () => (mounted = false);
     }, [checkoutToken.id]);
 
     useEffect(() => {
@@ -53,14 +51,12 @@ function AdressForm({ checkoutToken }) {
             const { subdivisions } = await commerce.services.localeListSubdivisions(countryCode);
             if (mounted) {
                 setloading(false);
+                setShippingStates(subdivisions);
+                setShippingState(Object.keys(subdivisions)[0]);
             }
-            setShippingStates(subdivisions);
-            setShippingState(Object.keys(subdivisions)[0]);
         };
         if (shippingCountry) fetchSubdivisions(shippingCountry);
-        return function cleanup() {
-            mounted = false;
-        };
+        return () => (mounted = false);
     }, [shippingCountry]);
 
     useEffect(() => {
@@ -74,15 +70,13 @@ function AdressForm({ checkoutToken }) {
                 const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region });
                 if (mounted) {
                     setloading(false);
+                    setShippingOptions(options);
+                    setShippingOption(options[0].id);
                 }
-                setShippingOptions(options);
-                setShippingOption(options[0].id);
             };
             fetchShippingOptions(checkoutToken.id, shippingCountry, shippingState);
         }
-        return function cleanup() {
-            mounted = false;
-        };
+        return () => (mounted = false);
     }, [checkoutToken.id, shippingCountry, shippingState]);
 
     return (

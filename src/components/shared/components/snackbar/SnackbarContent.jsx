@@ -1,5 +1,5 @@
 import CommerceHandler from "../../commerce-context";
-import { useContext, useEffect, memo } from "react";
+import { useContext, memo } from "react";
 import { Snackbar, Slide, Button, Grid, Typography, IconButton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";

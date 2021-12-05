@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState } from "react";
 import CommerceHandler from "../../shared/commerce-context";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
     Stepper,
     Step,
@@ -40,6 +40,15 @@ function Checkout() {
     const commerceHandling = useContext(CommerceHandler);
     const { generateToken } = useContext(CommerceHandler);
     const [cartIsEmpty, setCartIsEmpty] = useState(false);
+    const history = useHistory();
+
+    useEffect(() => {
+        history.listen(() => {
+            if (history.location.pathname !== "/checkout") {
+                commerceHandling.setStep(0);
+            }
+        });
+    });
 
     useEffect(() => {
         const checkIfCartIsEmpty = () => {
@@ -81,7 +90,7 @@ function Checkout() {
         ) : null;
 
     let Confirmation = () =>
-        commerceHandling.order.customer ? (
+        commerceHandling.order.customer && commerceHandling.currentShipping ? (
             <>
                 <Grid container spacing={4}>
                     <Grid item container direction="column" xs={12} md={6}>
@@ -181,7 +190,7 @@ function Checkout() {
         );
 
     function StepIcons(props) {
-        const { active, completed, className } = props;
+        const { className } = props;
 
         const icons = {
             1:
@@ -252,7 +261,8 @@ function Checkout() {
                         </Grid>
                     ) : null}
 
-                    {commerceHandling.activeStep !== 2 || commerceHandling.currentShipping.valid === false ? (
+                    {commerceHandling.activeStep !== 2 ||
+                    (commerceHandling.currentShipping && commerceHandling.currentShipping.valid === false) ? (
                         <Grid item container xs={12} justifyContent="center" direction="column" alignItems="center">
                             <CheckoutError />
                         </Grid>
