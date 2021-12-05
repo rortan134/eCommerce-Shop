@@ -1,6 +1,6 @@
 import { commerce } from "../../lib/commerce";
-import { createContext, useState, useReducer, useEffect, useCallback } from "react";
-import useProducts from "./utils/useProducts";
+import React, { createContext, useState, useReducer, useEffect, useCallback } from "react";
+//import useProducts from "./utils/useProducts";
 
 const CommerceHandler = createContext({
     cart: {},
@@ -73,7 +73,7 @@ export function CommerceProvider(props) {
     const [currentShipping, setCurrentShipping] = useState();
     const [estimatedLocation, setEstimatedLocation] = useState({});
 
-    const [attributesExceptions, setAttributesExceptions] = useState(["attr_gNXELwj1rl3A4p", "attr_LkpnNwAqawmXB3"]);
+    const attributesExceptions = ["attr_gNXELwj1rl3A4p", "attr_LkpnNwAqawmXB3"];
 
     useEffect(() => {
         const fetchProductsHandler = async () => {

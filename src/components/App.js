@@ -15,7 +15,6 @@ import Footer from "./shared/components/Footer";
 import NotFound from "./views/NotFound";
 
 function App() {
-
     return (
         <>
             <Header />

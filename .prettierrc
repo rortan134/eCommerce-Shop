@@ -4,7 +4,6 @@
     "embeddedLanguageFormatting": "auto",
     "htmlWhitespaceSensitivity": "css",
     "insertPragma": false,
-    "jsxBracketSameLine": false,
     "jsxSingleQuote": false,
     "proseWrap": "preserve",
     "quoteProps": "as-needed",
@@ -17,4 +16,4 @@
     "printWidth": 150,
     "tabWidth": 4,
     "rangeStart": 0
-  }
+}

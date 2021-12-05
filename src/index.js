@@ -8,7 +8,6 @@ import "./index.scss";
 
 import App from "./components/App";
 
-
 ReactDOM.render(
     <CommerceProvider>
         <BrowserRouter basename={process.env.PUBLIC_URL}>

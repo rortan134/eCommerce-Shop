@@ -35,7 +35,8 @@
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
         "lint": "eslint  --fix src/**/*.js",
-        "format": "prettier src/**/*.js --write. --config ./.prettierrc"
+        "format": "prettier src/**/*.js --write. --config ./.prettierrc",
+        "prepare": "husky install"
     },
     "eslintConfig": {
         "extends": [
