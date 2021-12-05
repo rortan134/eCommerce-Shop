@@ -131,15 +131,14 @@ export function CommerceProvider(props) {
 
     // Checkout Handlers
     const generateToken = useCallback(async () => {
-        if (callback.cart.id)
+        if (callback.cart.line_items >= 1 && callback.cart.id)
             try {
                 const token = await commerce.checkout.generateToken(callback.cart.id, { type: "cart" });
                 setCheckoutToken(token);
-                console.log("token created");
             } catch (error) {
                 console.log(error);
             }
-    }, [callback.cart.id]);
+    }, [callback.cart]);
 
     const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
         try {
@@ -151,7 +150,7 @@ export function CommerceProvider(props) {
         }
     };
 
-    const handleShippingMethod = useCallback(async () => {
+    const handleShippingMethod = async () => {
         if (checkoutToken.id && shippingData)
             await commerce.checkout
                 .checkShippingOption(checkoutToken.id, {
@@ -162,8 +161,7 @@ export function CommerceProvider(props) {
                 .then((data) => {
                     setCurrentShipping(data);
                 });
-                console.log("called")
-    }, [checkoutToken, shippingData]);
+    };
 
     const getShippingLocationFromIp = (checkoutTokenId, ip) => {
         commerce.checkout.getLocationFromIP(checkoutTokenId, ip).then((adress) => setEstimatedLocation(adress));
@@ -174,6 +172,7 @@ export function CommerceProvider(props) {
 
     const checkoutProceed = (data) => {
         setShippingData(data);
+        handleShippingMethod();
         checkoutNextStep();
     };
 

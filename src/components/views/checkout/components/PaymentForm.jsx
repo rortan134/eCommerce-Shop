@@ -1,11 +1,11 @@
-import CommerceHandler from "../../shared/commerce-context";
+import CommerceHandler from "../../../shared/commerce-context";
 import { useContext } from "react";
 import { Elements, CardElement, ElementsConsumer } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 import { Typography, Grid, Button, Paper } from "@material-ui/core";
 
-import styles from "./styles.module.scss";
+import styles from "../styles.module.scss";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 

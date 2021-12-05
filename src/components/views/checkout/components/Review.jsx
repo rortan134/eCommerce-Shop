@@ -1,7 +1,7 @@
 import { Typography, List, ListItem, ListItemText, Paper, Divider, Grid, Button } from "@material-ui/core";
 import { useContext } from "react";
-import CommerceHandler from "../../shared/commerce-context";
-import styles from "./styles.module.scss";
+import CommerceHandler from "../../../shared/commerce-context";
+import styles from "../styles.module.scss";
 
 function Review() {
     const commerceHandling = useContext(CommerceHandler);
@@ -10,7 +10,7 @@ function Review() {
         ? commerceHandling.checkoutToken.live.line_items.map((product) => ({
               productId: product.id,
               productName: product.name,
-              productImage: product.media.source,
+              productImage: product.image.url,
               productQty: product.quantity,
               productPrice: product.line_total.formatted_with_symbol,
           }))

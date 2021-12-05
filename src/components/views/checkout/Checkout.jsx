@@ -17,10 +17,10 @@ import {
     StepConnector,
 } from "@material-ui/core";
 
-import AdressForm from "./AdressForm";
-import PaymentDetails from "./PaymentDetails";
-import PaymentForm from "./PaymentForm";
-import Review from "./Review";
+import AdressForm from "./components/AdressForm";
+import PaymentDetails from "./components/PaymentDetails";
+import PaymentForm from "./components/PaymentForm";
+import Review from "./components/Review";
 
 import { ReactComponent as CheckoutIcon } from "../../assets/checkout.svg";
 import { ReactComponent as PaymentIcon } from "../../assets/payment.svg";
@@ -64,7 +64,7 @@ function Checkout() {
         ? commerceHandling.checkoutToken.live.line_items.map((product) => ({
               productId: product.id,
               productName: product.name,
-              productImage: product.media.source,
+              productImage: product.image.url,
               productQty: product.quantity,
               productPrice: product.line_total.formatted_with_symbol,
           }))

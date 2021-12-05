@@ -1,13 +1,13 @@
-import { commerce } from "../../../lib/commerce";
-import { useState, useEffect, useContext } from "react";
-import { InputLabel, Select, MenuItem, Button, Grid, Typography, Paper } from "@material-ui/core";
+import { commerce } from "../../../../lib/commerce";
+import { useState, useEffect, useContext, useRef } from "react";
+import { InputLabel, Select, MenuItem, Button, Grid, Typography, Paper, CircularProgress } from "@material-ui/core";
 import { useForm, FormProvider } from "react-hook-form";
 import CustomTextField from "./CustomTextField";
 import { Link } from "react-router-dom";
-import CommerceHandler from "../../shared/commerce-context";
+import CommerceHandler from "../../../shared/commerce-context";
 // import useUserIp from "../../shared/utils/useUserIp";
 
-import styles from "./styles.module.scss";
+import styles from "../styles.module.scss";
 
 function AdressForm({ checkoutToken }) {
     const commerceHandling = useContext(CommerceHandler);
@@ -19,6 +19,8 @@ function AdressForm({ checkoutToken }) {
     const [shippingState, setShippingState] = useState("");
     const [shippingOptions, setShippingOptions] = useState([]);
     const [shippingOption, setShippingOption] = useState("");
+    const [loading, setloading] = useState(true);
+    const previousLocation = useRef({ shippingCountry, shippingState });
 
     const methods = useForm();
 
@@ -30,31 +32,58 @@ function AdressForm({ checkoutToken }) {
     }));
 
     useEffect(() => {
+        let mounted = true;
         const fetchShippingCountries = async (checkoutTokenId) => {
             const { countries } = await commerce.services.localeListShippingCountries(checkoutTokenId);
+            if (mounted) {
+                setloading(false);
+            }
             setShippingCountries(countries);
             setShippingCountry(Object.keys(countries)[0]);
         };
         fetchShippingCountries(checkoutToken.id);
+        return function cleanup() {
+            mounted = false;
+        };
     }, [checkoutToken.id]);
 
     useEffect(() => {
+        let mounted = true;
         const fetchSubdivisions = async (countryCode) => {
             const { subdivisions } = await commerce.services.localeListSubdivisions(countryCode);
+            if (mounted) {
+                setloading(false);
+            }
             setShippingStates(subdivisions);
             setShippingState(Object.keys(subdivisions)[0]);
         };
-        fetchSubdivisions(shippingCountry);
+        if (shippingCountry) fetchSubdivisions(shippingCountry);
+        return function cleanup() {
+            mounted = false;
+        };
     }, [shippingCountry]);
 
     useEffect(() => {
-        const fetchShippingOptions = async (checkoutTokenId, country, region) => {
-            const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region });
-            setShippingOptions(options);
-            setShippingOption(options[0].id);
+        let mounted = true;
+        if (
+            previousLocation.current.shippingCountry !== shippingCountry &&
+            previousLocation.current.shippingState !== shippingState
+        ) {
+            previousLocation.current = { shippingCountry, shippingState };
+            const fetchShippingOptions = async (checkoutTokenId, country, region) => {
+                const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region });
+                if (mounted) {
+                    setloading(false);
+                }
+                setShippingOptions(options);
+                setShippingOption(options[0].id);
+            };
+            fetchShippingOptions(checkoutToken.id, shippingCountry, shippingState);
+        }
+        return function cleanup() {
+            mounted = false;
         };
-        if (shippingCountry && shippingState) fetchShippingOptions(checkoutToken.id, shippingCountry, shippingState);
-    }, [shippingState, checkoutToken.id, shippingCountry]);
+    }, [checkoutToken.id, shippingCountry, shippingState]);
 
     return (
         <>
@@ -82,33 +111,41 @@ function AdressForm({ checkoutToken }) {
                                 <CustomTextField name="shippingAdress" label="Shipping Adress" />
                                 <Grid className={styles.formSelect} item xs={12}>
                                     <InputLabel>Country</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={shippingCountry}
-                                        onChange={(e) => setShippingCountry(e.target.value)}
-                                    >
-                                        {countries.map((country) => (
-                                            <MenuItem key={country.id} value={country.id}>
-                                                {country.label}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                    {loading ? (
+                                        <CircularProgress size={20} />
+                                    ) : (
+                                        <Select
+                                            fullWidth
+                                            value={shippingCountry}
+                                            onChange={(e) => setShippingCountry(e.target.value)}
+                                        >
+                                            {countries.map((country) => (
+                                                <MenuItem key={country.id} value={country.id}>
+                                                    {country.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
                                 </Grid>
 
                                 <Grid item container spacing={2} direction="row" xs="auto">
                                     <Grid className={styles.formInput} item container xs={6}>
                                         <InputLabel>State / Province</InputLabel>
-                                        <Select
-                                            fullWidth
-                                            value={shippingState}
-                                            onChange={(e) => setShippingState(e.target.value)}
-                                        >
-                                            {states.map((state) => (
-                                                <MenuItem key={state.id} value={state.id}>
-                                                    {state.label}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
+                                        {loading ? (
+                                            <CircularProgress size={20} />
+                                        ) : (
+                                            <Select
+                                                fullWidth
+                                                value={shippingState}
+                                                onChange={(e) => setShippingState(e.target.value)}
+                                            >
+                                                {states.map((state) => (
+                                                    <MenuItem key={state.id} value={state.id}>
+                                                        {state.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        )}
                                     </Grid>
                                     <Grid item container xs={6}>
                                         <CustomTextField required name="zipCode" label="Zip Code" />
@@ -116,17 +153,21 @@ function AdressForm({ checkoutToken }) {
                                 </Grid>
                                 <Grid className={styles.formSelect} item xs={12}>
                                     <InputLabel>Delivery</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={shippingOption}
-                                        onChange={(e) => setShippingOption(e.target.value)}
-                                    >
-                                        {options.map((option) => (
-                                            <MenuItem key={option.id} value={option.id}>
-                                                {option.label}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                    {loading ? (
+                                        <CircularProgress size={20} />
+                                    ) : (
+                                        <Select
+                                            fullWidth
+                                            value={shippingOption}
+                                            onChange={(e) => setShippingOption(e.target.value)}
+                                        >
+                                            {options.map((option) => (
+                                                <MenuItem key={option.id} value={option.id}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
                                 </Grid>
                             </Grid>
                             <Grid
