@@ -19,7 +19,7 @@ function CartItem({ item, onRemoveFromCart, onUpdateCartQty }) {
     return (
         <Card className={styles.cartCard}>
             <Grid container direction="row">
-                <CardMedia image={item.media.source} alt={item.name} className={styles.cardImage} />
+                <CardMedia image={item.image.url} alt={item.name} className={styles.cardImage} />
                 <CardContent className={styles.cardContent}>
                     <Typography variant="h5">{item.name}</Typography>
                     <Typography variant="h6">{item.line_total.formatted_with_symbol}</Typography>

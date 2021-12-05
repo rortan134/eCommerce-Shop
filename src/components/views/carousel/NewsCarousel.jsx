@@ -84,7 +84,7 @@ function NewsCarousel() {
                                 }}
                             >
                                 <div className={styles.carousel__cardImageWrapper}>
-                                    <img src={product.media.source} alt="product" />
+                                    <img src={product.image.url} alt="product" />
                                 </div>
                                 <CardContent className={styles.carousel__content}>
                                     <Typography

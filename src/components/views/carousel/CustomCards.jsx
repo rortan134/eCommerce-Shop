@@ -193,7 +193,7 @@ function CustomCards() {
                                             xs={6}
                                             className={`card__image__wrap ${classes.card__image__wrap}`}
                                         >
-                                            <img src={product.media.source} alt={product.name} />
+                                            <img src={product.image.url} alt={product.name} />
                                         </Grid>
                                         <Grid
                                             container

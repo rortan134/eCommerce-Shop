@@ -21,7 +21,7 @@ function Product({ product, customClickEvent }) {
                     spacing={8}
                 >
                     <Container className={styles.productImage}>
-                        <img src={product.media.source} alt="product" />
+                        <img src={product.image.url} alt="product" />
                     </Container>
                     <Container className={styles.productText}>
                         <Grid spacing={8} container direction="column">
