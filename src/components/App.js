@@ -10,7 +10,7 @@ import Home from "./views/home/Home";
 import Header from "./shared/components/Header";
 import Products from "./views/products/Products";
 import Cart from "./views/cart/Cart";
-import SnackBar from "./shared/components/Snackbar";
+import SnackBar from "./shared/components/snackbar/Snackbar";
 import CustomCards from "./views/carousel/CustomCards";
 import NewsCarousel from "./views/carousel/NewsCarousel";
 import Checkout from "./views/checkout/Checkout";
