@@ -45,11 +45,10 @@ function Checkout() {
         const checkIfCartIsEmpty = () => {
             if (commerceHandling.cart.line_items && commerceHandling.cart.line_items.length === 0) {
                 setCartIsEmpty(true);
-            }
+            } else generateToken();
         };
-        generateToken();
         checkIfCartIsEmpty();
-    }, [generateToken, commerceHandling.cart]);
+    }, [generateToken, commerceHandling.cart.line_items]);
 
     const Form = () =>
         commerceHandling.activeStep === 0 ? (

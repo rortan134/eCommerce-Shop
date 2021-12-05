@@ -127,7 +127,7 @@ export function CommerceProvider(props) {
 
     // Checkout Handlers
     const generateToken = useCallback(async () => {
-        if (callback.cart.line_items >= 1 && callback.cart.id)
+        if (callback.cart.id && callback.cart.line_items.length >= 1)
             try {
                 const token = await commerce.checkout.generateToken(callback.cart.id, { type: "cart" });
                 setCheckoutToken(token);
