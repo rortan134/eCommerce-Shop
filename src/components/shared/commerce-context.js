@@ -72,11 +72,7 @@ export function CommerceProvider(props) {
     const [currentShipping, setCurrentShipping] = useState();
     const [estimatedLocation, setEstimatedLocation] = useState({});
 
-    const [attributesExceptions, setAttributesExceptions] = useState([
-        "attr_gNXELwj1rl3A4p",
-        "new-in",
-        "attr_LkpnNwAqawmXB3",
-    ]);
+    const [attributesExceptions, setAttributesExceptions] = useState(["attr_gNXELwj1rl3A4p", "attr_LkpnNwAqawmXB3"]);
 
     useEffect(() => {
         const fetchProductsHandler = async () => {

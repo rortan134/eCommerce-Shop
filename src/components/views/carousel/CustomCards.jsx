@@ -3,10 +3,10 @@ import { useContext, useState, useEffect } from "react";
 import CommerceHandler from "../../shared/commerce-context";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-
 import { Paper, Typography, CardActionArea, Button, Grid, Container } from "@material-ui/core";
-
 import { ArrowForward, ArrowBack } from "@material-ui/icons";
+
+import useProducts from "../../shared/utils/useProducts";
 import styles from "./styles.module.scss";
 
 const useStyles = makeStyles({
@@ -87,28 +87,16 @@ const useStyles = makeStyles({
 });
 
 function CustomCards() {
-    const commerceHandling = useContext(CommerceHandler);
-
     const classes = useStyles();
     const history = useHistory();
+    
+    const products = useProducts("category_slug", "new-in");
 
     const [productsLength, setProductsLength] = useState({});
-    const [newProducts, setNewProducts] = useState([]);
     const [responsive, setResponsive] = useState({});
 
     useEffect(() => {
-        setNewProducts([]);
-        commerceHandling.products.map((product) =>
-            product.categories.map((category) =>
-                commerceHandling.attributesExceptions.includes(category.slug)
-                    ? setNewProducts((prevArray) => [...prevArray, product])
-                    : null
-            )
-        );
-    }, [commerceHandling.products, commerceHandling.attributesExceptions]);
-
-    useEffect(() => {
-        if (newProducts && newProducts.length >= 2) {
+        if (products && products.length >= 2) {
             setProductsLength({
                 breakpoint: { max: 4000, min: 900 },
                 items: 2,
@@ -118,7 +106,7 @@ function CustomCards() {
                 breakpoint: { max: 4000, min: 900 },
                 items: 1,
             });
-    }, [newProducts]);
+    }, [products]);
 
     useEffect(() => {
         setResponsive({
@@ -148,7 +136,7 @@ function CustomCards() {
     return (
         <div className={styles.carousel__wrapper}>
             <Container className={styles.carousel_content}>
-                {newProducts ? (
+                {products ? (
                     <Carousel
                         responsive={responsive}
                         ssr={true}
@@ -159,7 +147,7 @@ function CustomCards() {
                         customLeftArrow={<CustomLeftArrow />}
                         containerClass={classes.card__container}
                     >
-                        {newProducts.map((product) => (
+                        {products.map((product) => (
                             <Paper
                                 className={`custom__card__wrapper ${classes.card__wrapper}`}
                                 style={{
