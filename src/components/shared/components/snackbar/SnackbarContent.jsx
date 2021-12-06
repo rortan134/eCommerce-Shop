@@ -45,7 +45,7 @@ const useStyles = makeStyles({
     },
 });
 
-function SnackbarContent({ body, closeHandler, setMessage }) {
+function SnackbarContent({ body, closeHandler }) {
     const commerceHandling = useContext(CommerceHandler);
 
     const styles = useStyles();
@@ -56,21 +56,10 @@ function SnackbarContent({ body, closeHandler, setMessage }) {
         commerceHandling.itemAddedToCart ? (
             <div>
                 <Grid container item className={styles.snackbar__action__container}>
-                    <Button
-                        className={styles.snackbar__action__btn}
-                        component={Link}
-                        to="/cart"
-                        variant="outlined"
-                        onClick={closeHandler}
-                    >
+                    <Button className={styles.snackbar__action__btn} component={Link} to="/cart" variant="outlined" onClick={closeHandler}>
                         Cart
                     </Button>
-                    <Button
-                        className={styles.snackbar__action__btn}
-                        component={Link}
-                        to="/checkout"
-                        variant="contained"
-                    >
+                    <Button className={styles.snackbar__action__btn} component={Link} to="/checkout" variant="contained">
                         Proceed to payment
                     </Button>
                 </Grid>

@@ -2,21 +2,10 @@ import { useContext, useState, useEffect } from "react";
 import CommerceHandler from "../../shared/commerce-context";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
-import useProducts from "../../shared/utils/useProducts";
-import {
-    Button,
-    Radio,
-    Typography,
-    Container,
-    FormControl,
-    FormControlLabel,
-    RadioGroup,
-    IconButton,
-    Grid,
-} from "@material-ui/core";
+import { Button, Radio, Typography, Container, FormControl, FormControlLabel, RadioGroup, IconButton, Grid } from "@material-ui/core";
 
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import { commerce } from "../../../lib/commerce";
+// import useProducts from "../../shared/utils/useProducts";
 
 const useStyles = makeStyles({
     root: {
@@ -143,8 +132,7 @@ function Landing() {
             commerceHandling.products
                 ? commerceHandling.products.map((product) =>
                       product.attributes.filter((attribute) =>
-                          commerceHandling.attributesExceptions.includes(attribute.id) === false &&
-                          attribute.value !== false
+                          commerceHandling.attributesExceptions.includes(attribute.id) === false && attribute.value !== false
                               ? setProduct(product)
                               : null
                       )
@@ -178,26 +166,13 @@ function Landing() {
                 <Container className={styles.home}>
                     <div className="homeContainer_wrap">
                         <Grid container align="center" justifyContent="center" style={{ height: "fit-content" }}>
-                            <img
-                                className="activeImg"
-                                src={activeImgUrl ? activeImgUrl : null}
-                                alt={product ? product.name : null}
-                            />
+                            <img className="activeImg" src={activeImgUrl ? activeImgUrl : null} alt={product ? product.name : null} />
                         </Grid>
-                        <Grid
-                            container
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                            className="activeImgWrapper"
-                        >
+                        <Grid container direction="row" justifyContent="center" alignItems="center" className="activeImgWrapper">
                             {product
                                 ? product.assets.map((images) => (
                                       <Grid key={images.id} item zeroMinWidth>
-                                          <IconButton
-                                              onClick={() => setActiveImgUrl(images.url)}
-                                              className="imageDemoButton"
-                                          >
+                                          <IconButton onClick={() => setActiveImgUrl(images.url)} className="imageDemoButton">
                                               <img src={images.url} width="25px" alt="Buy now" />
                                           </IconButton>
                                       </Grid>
@@ -208,19 +183,10 @@ function Landing() {
 
                     <div className="homeContainer_wrap">
                         <Container className="homeContainer__content">
-                            <Typography
-                                align="left"
-                                style={{ color: "#4875ca", fontWeight: "500" }}
-                                variant="subtitle1"
-                                nowrap
-                            >
+                            <Typography align="left" style={{ color: "#4875ca", fontWeight: "500" }} variant="subtitle1" nowrap>
                                 {product ? product.price.formatted_with_symbol : null}
                             </Typography>
-                            <Typography
-                                align="left"
-                                style={{ fontWeight: "700", marginBottom: "1.5rem", color: "#222222" }}
-                                variant="h4"
-                            >
+                            <Typography align="left" style={{ fontWeight: "700", marginBottom: "1.5rem", color: "#222222" }} variant="h4">
                                 {product ? product.name : null}
                             </Typography>
                             <Typography

@@ -66,9 +66,7 @@ function PaymentDetails() {
                             <Grid item xs={3} />
                             <Grid item>
                                 <Typography variant="body1">{purchaseDate}</Typography>
-                                <Typography variant="caption">
-                                    Expires: {commerceHandling.checkoutToken.expires}
-                                </Typography>
+                                <Typography variant="caption">Expires: {commerceHandling.checkoutToken.expires}</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -110,8 +108,7 @@ function PaymentDetails() {
                             </Grid>
                             <Grid item xs={3} />
                             <Typography variant="body1">
-                                {commerceHandling.shippingData.shippingCountry},
-                                {commerceHandling.shippingData.shippingAdress}, <br />
+                                {commerceHandling.shippingData.shippingCountry},{commerceHandling.shippingData.shippingAdress}, <br />
                                 {commerceHandling.shippingData.zipCode}
                             </Typography>
                         </Grid>

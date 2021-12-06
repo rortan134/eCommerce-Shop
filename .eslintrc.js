@@ -29,6 +29,7 @@ module.exports = {
         "react/react-in-jsx-scope": "off",
         // allow jsx syntax in js files
         "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }],
-        "react/prop-types": "off"
+        "react/prop-types": "off",
+        
     },
 };

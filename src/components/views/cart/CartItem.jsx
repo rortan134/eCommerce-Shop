@@ -1,16 +1,5 @@
 import React from "react";
-import {
-    Typography,
-    Button,
-    Grid,
-    Card,
-    CardMedia,
-    CardContent,
-    CardActions,
-    FormControl,
-    NativeSelect,
-    InputLabel,
-} from "@material-ui/core";
+import { Typography, Button, Grid, Card, CardMedia, CardContent, CardActions, FormControl, NativeSelect, InputLabel } from "@material-ui/core";
 import DeleteForever from "@material-ui/icons/DeleteForever";
 
 import styles from "./styles.module.scss";
@@ -46,14 +35,7 @@ function CartItem({ item, onRemoveFromCart, onUpdateCartQty }) {
                             </NativeSelect>
                         </FormControl>
                     </Grid>
-                    <Grid
-                        className={styles.actionFeatures}
-                        item
-                        container
-                        direction="row"
-                        justifyContent="space-evenly"
-                        alignItems="center"
-                    >
+                    <Grid className={styles.actionFeatures} item container direction="row" justifyContent="space-evenly" alignItems="center">
                         <Button
                             onClick={() => {
                                 onUpdateCartQty(item.id, item.quantity - 1);

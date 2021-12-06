@@ -152,9 +152,7 @@ function CustomCards() {
                                 style={{
                                     background: `url(${product.attributes
                                         .map((attribute) =>
-                                            attribute.id === "attr_LkpnNwAqawmXB3" && attribute.value !== null
-                                                ? attribute.value
-                                                : ""
+                                            attribute.id === "attr_LkpnNwAqawmXB3" && attribute.value !== null ? attribute.value : ""
                                         )
                                         .join("")})`,
                                 }}
@@ -168,28 +166,11 @@ function CustomCards() {
                                         history.push(path);
                                     }}
                                 >
-                                    <Grid
-                                        container
-                                        justifyContent="space-between"
-                                        className={`action__area__grid ${classes.action__area__grid}`}
-                                    >
-                                        <Grid
-                                            item
-                                            zeroMinWidth
-                                            md={4}
-                                            xs={6}
-                                            className={`card__image__wrap ${classes.card__image__wrap}`}
-                                        >
+                                    <Grid container justifyContent="space-between" className={`action__area__grid ${classes.action__area__grid}`}>
+                                        <Grid item zeroMinWidth md={4} xs={6} className={`card__image__wrap ${classes.card__image__wrap}`}>
                                             <img src={product.image.url} alt={product.name} />
                                         </Grid>
-                                        <Grid
-                                            container
-                                            item
-                                            md={8}
-                                            xs={12}
-                                            direction="column"
-                                            className={`card__actions ${classes.card__actions}`}
-                                        >
+                                        <Grid container item md={8} xs={12} direction="column" className={`card__actions ${classes.card__actions}`}>
                                             <Grid item xs={12}>
                                                 <Typography variant="h5">{product.name}</Typography>
                                                 <Button

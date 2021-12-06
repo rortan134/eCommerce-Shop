@@ -20,13 +20,7 @@ function Sidebar({ handlePriceChange, priceRange, filterProducts }) {
                 <Typography className={styles.title} variant="subtitle1" align="left">
                     Price
                 </Typography>
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    className={styles.wrap__1}
-                >
+                <Grid container direction="row" justifyContent="space-between" alignItems="center" className={styles.wrap__1}>
                     <Slider
                         getAriaLabel={() => "Price range"}
                         value={priceRange}

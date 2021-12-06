@@ -33,11 +33,7 @@ function Cart() {
             <Grid container className={styles.filledCart_grid}>
                 {commerceHandling.cart.line_items.map((item) => (
                     <Grid item xs={12} key={item.id}>
-                        <CartItem
-                            item={item}
-                            onUpdateCartQty={commerceHandling.updateCartQty}
-                            onRemoveFromCart={commerceHandling.removeFromCart}
-                        />
+                        <CartItem item={item} onUpdateCartQty={commerceHandling.updateCartQty} onRemoveFromCart={commerceHandling.removeFromCart} />
                         <div className={styles.cardDivisor} />
                     </Grid>
                 ))}
@@ -67,13 +63,7 @@ function Cart() {
                 </div>
                 <div className={styles.bottom_wrapper}>
                     <div className={styles.inner__bottom_wrapper}>
-                        <Grid
-                            className={styles.cartInfo_container}
-                            container
-                            justifyContent="space-between"
-                            alignItems="center"
-                            direction="row"
-                        >
+                        <Grid className={styles.cartInfo_container} container justifyContent="space-between" alignItems="center" direction="row">
                             <Grid item>
                                 <Grid container alignItems="center" direction="row">
                                     <Typography className={styles.codePromo} variant="subtitle1">
@@ -93,9 +83,7 @@ function Cart() {
                                 <Grid container direction="row">
                                     <Typography variant="subtitle1">Subtotal</Typography>
                                     <Typography variant="h6" className={styles.cartSubtotal_value}>
-                                        {commerceHandling.cart.subtotal
-                                            ? commerceHandling.cart.subtotal.formatted_with_code
-                                            : null}
+                                        {commerceHandling.cart.subtotal ? commerceHandling.cart.subtotal.formatted_with_code : null}
                                     </Typography>
                                 </Grid>
                             </Grid>

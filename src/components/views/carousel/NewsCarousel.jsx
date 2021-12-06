@@ -3,16 +3,7 @@ import CommerceHandler from "../../shared/commerce-context";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { NavLink, useHistory } from "react-router-dom";
-import {
-    Paper,
-    Typography,
-    CardActionArea,
-    CardContent,
-    ButtonGroup,
-    Button,
-    Grid,
-    Container,
-} from "@material-ui/core";
+import { Paper, Typography, CardActionArea, CardContent, ButtonGroup, Button, Grid, Container } from "@material-ui/core";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import CompareArrowsIcon from "@material-ui/icons/CompareArrowsOutlined";
 
@@ -52,12 +43,7 @@ function NewsCarousel() {
     return (
         <div className={styles.carousel__wrapper}>
             <Container className={styles.carousel_content}>
-                <Grid
-                    container
-                    justifyContent="space-between"
-                    alignItems="center"
-                    className={styles.carousel__title__container}
-                >
+                <Grid container justifyContent="space-between" alignItems="center" className={styles.carousel__title__container}>
                     <Typography className={styles.carousel__title} variant="h4">
                         News
                     </Typography>
@@ -88,11 +74,7 @@ function NewsCarousel() {
                                           <img src={product.image.url} alt="product" />
                                       </div>
                                       <CardContent className={styles.carousel__content}>
-                                          <Typography
-                                              style={{ display: "inline", color: "rgb(45, 85, 158)" }}
-                                              gutterBottom
-                                              variant="subtitle2"
-                                          >
+                                          <Typography style={{ display: "inline", color: "rgb(45, 85, 158)" }} gutterBottom variant="subtitle2">
                                               {product.price.raw + " €"}
                                           </Typography>
                                           <Typography variant="body2">{product.name}</Typography>

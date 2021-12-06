@@ -25,20 +25,10 @@ function Product({ product, customClickEvent }) {
                     </Container>
                     <Container className={styles.productText}>
                         <Grid spacing={8} container direction="column">
-                            <Typography
-                                align="left"
-                                style={{ color: "#4875ca", fontWeight: "500" }}
-                                variant="h6"
-                                nowrap
-                            >
+                            <Typography align="left" style={{ color: "#4875ca", fontWeight: "500" }} variant="h6" nowrap>
                                 {product.price.raw + " €"}
                             </Typography>
-                            <Typography
-                                align="left"
-                                style={{ color: "#333333", fontWeight: "600" }}
-                                variant="h6"
-                                nowrap
-                            >
+                            <Typography align="left" style={{ color: "#333333", fontWeight: "600" }} variant="h6" nowrap>
                                 {product.name}
                             </Typography>
                             <Typography

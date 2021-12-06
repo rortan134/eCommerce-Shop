@@ -95,20 +95,13 @@ function Checkout() {
                 <Grid container spacing={4}>
                     <Grid item container direction="column" xs={12} md={6}>
                         <Paper className={styles.review_paperWrapper}>
-                            <Grid
-                                container
-                                justifyContent="center"
-                                direction="column"
-                                wrap="nowrap"
-                                alignItems="center"
-                            >
+                            <Grid container justifyContent="center" direction="column" wrap="nowrap" alignItems="center">
                                 <CheckoutComplete style={{ padding: "2em 0" }} />
                                 <Typography style={{ paddingBottom: ".6em" }} variant="h5">
                                     Order Confirmed
                                 </Typography>
                                 <Typography align="center" variant="body2">
-                                    Your order have been confirmed {commerceHandling.order.customer.firstname}, please
-                                    wait and track your order.
+                                    Your order have been confirmed {commerceHandling.order.customer.firstname}, please wait and track your order.
                                 </Typography>
                                 <Typography style={{ paddingBottom: "2em" }} variant="caption">
                                     Order Reference: {commerceHandling.order.customer_reference}
@@ -143,10 +136,7 @@ function Checkout() {
                                             style={{ marginRight: "1em", display: "inline-block" }}
                                             alt={product.productName}
                                         />
-                                        <ListItemText
-                                            primary={product.productName}
-                                            secondary={`Quantity: ${product.productQty}`}
-                                        />
+                                        <ListItemText primary={product.productName} secondary={`Quantity: ${product.productQty}`} />
                                         <Grid item>
                                             <Typography variant="subtitle1">{product.productPrice}</Typography>
                                         </Grid>
@@ -155,9 +145,7 @@ function Checkout() {
                             </List>
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="h6">Subtotal</Typography>
-                                <Typography>
-                                    {commerceHandling.currentShipping.live.subtotal.formatted_with_symbol}
-                                </Typography>
+                                <Typography>{commerceHandling.currentShipping.live.subtotal.formatted_with_symbol}</Typography>
                             </Grid>
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="h6">Shipping Cost</Typography>
@@ -166,16 +154,13 @@ function Checkout() {
                             <Divider variant="middle" style={{ margin: "1em 0" }} />
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="h5">Grand Total</Typography>
-                                <Typography variant="h5">
-                                    {commerceHandling.currentShipping.live.total.formatted_with_symbol}
-                                </Typography>
+                                <Typography variant="h5">{commerceHandling.currentShipping.live.total.formatted_with_symbol}</Typography>
                             </Grid>
                             <Divider variant="middle" style={{ margin: "1em 0" }} />
                             <Grid item container xs={12} justifyContent="space-between">
                                 <Typography variant="body1">Shipping Adress</Typography>
                                 <Typography variant="body1">
-                                    {commerceHandling.shippingData.shippingCountry},
-                                    {commerceHandling.shippingData.shippingAdress}, <br />
+                                    {commerceHandling.shippingData.shippingCountry},{commerceHandling.shippingData.shippingAdress}, <br />
                                     {commerceHandling.shippingData.zipCode}
                                 </Typography>
                             </Grid>
@@ -193,24 +178,9 @@ function Checkout() {
         const { className } = props;
 
         const icons = {
-            1:
-                commerceHandling.activeStep === 0 ? (
-                    <CheckoutIconActive className={styles.activeStepperIcon} />
-                ) : (
-                    <CheckoutIcon />
-                ),
-            2:
-                commerceHandling.activeStep === 1 ? (
-                    <PaymentIconActive className={styles.activeStepperIcon} />
-                ) : (
-                    <PaymentIcon />
-                ),
-            3:
-                commerceHandling.activeStep === 2 ? (
-                    <ConfirmIconActive className={styles.activeStepperIcon} />
-                ) : (
-                    <ConfirmIcon />
-                ),
+            1: commerceHandling.activeStep === 0 ? <CheckoutIconActive className={styles.activeStepperIcon} /> : <CheckoutIcon />,
+            2: commerceHandling.activeStep === 1 ? <PaymentIconActive className={styles.activeStepperIcon} /> : <PaymentIcon />,
+            3: commerceHandling.activeStep === 2 ? <ConfirmIconActive className={styles.activeStepperIcon} /> : <ConfirmIcon />,
         };
 
         return <div className={className}>{icons[String(props.icon)]}</div>;
@@ -220,11 +190,7 @@ function Checkout() {
         <>
             <main className={styles.checkout__layout}>
                 <Stepper
-                    connector={
-                        <StepConnector
-                            classes={{ root: styles.connectorLine, alternativeLabel: styles.connectorAlternativeLabel }}
-                        />
-                    }
+                    connector={<StepConnector classes={{ root: styles.connectorLine, alternativeLabel: styles.connectorAlternativeLabel }} />}
                     alternativeLabel
                     activeStep={commerceHandling.activeStep}
                     className={styles.checkout__stepper}
@@ -261,8 +227,7 @@ function Checkout() {
                         </Grid>
                     ) : null}
 
-                    {commerceHandling.activeStep !== 2 ||
-                    (commerceHandling.currentShipping && commerceHandling.currentShipping.valid === false) ? (
+                    {commerceHandling.activeStep !== 2 || (commerceHandling.currentShipping && commerceHandling.currentShipping.valid === false) ? (
                         <Grid item container xs={12} justifyContent="center" direction="column" alignItems="center">
                             <CheckoutError />
                         </Grid>

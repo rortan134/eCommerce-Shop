@@ -61,10 +61,7 @@ function AdressForm({ checkoutToken }) {
 
     useEffect(() => {
         let mounted = true;
-        if (
-            previousLocation.current.shippingCountry !== shippingCountry &&
-            previousLocation.current.shippingState !== shippingState
-        ) {
+        if (previousLocation.current.shippingCountry !== shippingCountry && previousLocation.current.shippingState !== shippingState) {
             previousLocation.current = { shippingCountry, shippingState };
             const fetchShippingOptions = async (checkoutTokenId, country, region) => {
                 const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region });
@@ -108,11 +105,7 @@ function AdressForm({ checkoutToken }) {
                                     {loading ? (
                                         <CircularProgress size={20} />
                                     ) : (
-                                        <Select
-                                            fullWidth
-                                            value={shippingCountry}
-                                            onChange={(e) => setShippingCountry(e.target.value)}
-                                        >
+                                        <Select fullWidth value={shippingCountry} onChange={(e) => setShippingCountry(e.target.value)}>
                                             {countries.map((country) => (
                                                 <MenuItem key={country.id} value={country.id}>
                                                     {country.label}
@@ -128,11 +121,7 @@ function AdressForm({ checkoutToken }) {
                                         {loading ? (
                                             <CircularProgress size={20} />
                                         ) : (
-                                            <Select
-                                                fullWidth
-                                                value={shippingState}
-                                                onChange={(e) => setShippingState(e.target.value)}
-                                            >
+                                            <Select fullWidth value={shippingState} onChange={(e) => setShippingState(e.target.value)}>
                                                 {states.map((state) => (
                                                     <MenuItem key={state.id} value={state.id}>
                                                         {state.label}
@@ -150,11 +139,7 @@ function AdressForm({ checkoutToken }) {
                                     {loading ? (
                                         <CircularProgress size={20} />
                                     ) : (
-                                        <Select
-                                            fullWidth
-                                            value={shippingOption}
-                                            onChange={(e) => setShippingOption(e.target.value)}
-                                        >
+                                        <Select fullWidth value={shippingOption} onChange={(e) => setShippingOption(e.target.value)}>
                                             {options.map((option) => (
                                                 <MenuItem key={option.id} value={option.id}>
                                                     {option.label}
@@ -164,13 +149,7 @@ function AdressForm({ checkoutToken }) {
                                     )}
                                 </Grid>
                             </Grid>
-                            <Grid
-                                className={styles.continueButtons}
-                                container
-                                justifyContent="space-between"
-                                alignItems="center"
-                                wrap="nowrap"
-                            >
+                            <Grid className={styles.continueButtons} container justifyContent="space-between" alignItems="center" wrap="nowrap">
                                 <Button component={Link} to="/cart" size="large" variant="outlined">
                                     Continue Shopping
                                 </Button>

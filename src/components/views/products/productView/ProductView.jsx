@@ -20,7 +20,7 @@ import {
     Grid,
     Tabs,
     Tab,
-    Divider
+    Divider,
 } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -113,12 +113,12 @@ function ProductView({ match }) {
     const increaseQty = () => {
         if (productQty >= product.inventory.available && product.inventory.managed) {
             return;
-        } else if(productQty < 10) setProductQty(qty => qty + 1);
+        } else if (productQty < 10) setProductQty((qty) => qty + 1);
     };
 
     const decreaseQty = () => {
         if (productQty !== 1) {
-            setProductQty(qty => qty - 1);
+            setProductQty((qty) => qty - 1);
         }
     };
 
@@ -142,13 +142,7 @@ function ProductView({ match }) {
         const { children, value, index, ...other } = props;
 
         return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`full-width-tabpanel-${index}`}
-                aria-labelledby={`full-width-tab-${index}`}
-                {...other}
-            >
+            <div role="tabpanel" hidden={value !== index} id={`full-width-tabpanel-${index}`} aria-labelledby={`full-width-tab-${index}`} {...other}>
                 {value === index && (
                     <Container sx={{ p: 3 }} className={styles.product__description__container}>
                         <Typography>{children}</Typography>
@@ -226,12 +220,8 @@ function ProductView({ match }) {
                                                         isFluidWidth: true,
                                                     },
                                                     largeImage: {
-                                                        width: activeImgUrl
-                                                            ? activeImgUrl.image_dimensions.width
-                                                            : null,
-                                                        height: activeImgUrl
-                                                            ? activeImgUrl.image_dimensions.height
-                                                            : null,
+                                                        width: activeImgUrl ? activeImgUrl.image_dimensions.width : null,
+                                                        height: activeImgUrl ? activeImgUrl.image_dimensions.height : null,
                                                         src: `${activeImgUrl ? activeImgUrl.url : null}`,
                                                     },
                                                     enlargedImagePortalId: "magnified__portal",
@@ -242,13 +232,7 @@ function ProductView({ match }) {
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid
-                                            container
-                                            direction="row"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                            className="activeImgWrapper"
-                                        >
+                                        <Grid container direction="row" justifyContent="center" alignItems="center" className="activeImgWrapper">
                                             {product.assets
                                                 ? product.assets.map((images) => (
                                                       <Grid key={images.id} item zeroMinWidth>
@@ -274,13 +258,7 @@ function ProductView({ match }) {
                                         justifyContent="space-around"
                                     >
                                         <div id="magnified__portal" className={styles.image__portal} />
-                                        <Grid
-                                            item
-                                            container
-                                            justifyContent="space-between"
-                                            alignItems="center"
-                                            wrap="nowrap"
-                                        >
+                                        <Grid item container justifyContent="space-between" alignItems="center" wrap="nowrap">
                                             <Typography variant="h4">{product ? product.name : null}</Typography>
                                             <IconButton style={{ background: "#F5F6F4" }}>
                                                 <FavoriteBorderIcon style={{ color: "#2d3245" }} />
@@ -288,7 +266,6 @@ function ProductView({ match }) {
                                         </Grid>
                                         <Typography
                                             align="left"
-                                            variant="subtitle1"
                                             style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
                                             dangerouslySetInnerHTML={{
                                                 __html: product ? product.description : null,
@@ -297,10 +274,7 @@ function ProductView({ match }) {
                                         <Typography gutterBottom variant="h6">
                                             {product.price ? product.price.formatted_with_symbol : null}
                                         </Typography>
-                                        <FormControl
-                                            component="fieldset"
-                                            style={{ width: "100%", marginBottom: "3rem" }}
-                                        >
+                                        <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
                                             <RadioGroup
                                                 style={{ flexWrap: "nowrap" }}
                                                 aria-label="colors"
@@ -310,35 +284,13 @@ function ProductView({ match }) {
                                                 value={checkbox}
                                                 onChange={handleRadio}
                                             >
-                                                <FormControlLabel
-                                                    value="color1"
-                                                    control={<Radio color="primary" />}
-                                                    label=""
-                                                />
-                                                <FormControlLabel
-                                                    value="color2"
-                                                    control={<Radio color="secondary" />}
-                                                    label=""
-                                                />
-                                                <FormControlLabel
-                                                    value="color3"
-                                                    control={<Radio color="primary" />}
-                                                    label=""
-                                                />
-                                                <FormControlLabel
-                                                    value="color4"
-                                                    control={<Radio color="default" />}
-                                                    label=""
-                                                />
+                                                <FormControlLabel value="color1" control={<Radio color="primary" />} label="" />
+                                                <FormControlLabel value="color2" control={<Radio color="secondary" />} label="" />
+                                                <FormControlLabel value="color3" control={<Radio color="primary" />} label="" />
+                                                <FormControlLabel value="color4" control={<Radio color="default" />} label="" />
                                             </RadioGroup>
                                         </FormControl>
-                                        <Grid
-                                            container
-                                            item
-                                            alignItems="center"
-                                            wrap="nowrap"
-                                            style={{ marginBottom: "1.5rem" }}
-                                        >
+                                        <Grid container item alignItems="center" wrap="nowrap" style={{ marginBottom: "1.5rem" }}>
                                             <Button
                                                 onClick={() => {
                                                     decreaseQty();
@@ -393,17 +345,10 @@ function ProductView({ match }) {
                             </Grid>
                         </Container>
                         <Container className={styles.product__info}>
-                            <Tabs
-                                scrollButtons="auto"
-                                value={value}
-                                onChange={handleChange}
-                                fullWidth
-                                indicatorColor="primary"
-                                textColor="primary"
-                            >
+                            <Tabs scrollButtons="auto" value={value} onChange={handleChange} fullWidth indicatorColor="primary" textColor="primary">
                                 {product.attributes
                                     ? product.attributes.map((attribute, index) =>
-                                    commerceHandling.attributesExceptions.includes(attribute.id) === false ? (
+                                          commerceHandling.attributesExceptions.includes(attribute.id) === false ? (
                                               <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
                                           ) : null
                                       )

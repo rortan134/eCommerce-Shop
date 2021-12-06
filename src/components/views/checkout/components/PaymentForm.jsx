@@ -68,10 +68,7 @@ function PaymentForm() {
                                         <br />
                                         <br />
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                            <Button
-                                                variant="outlined"
-                                                onClick={() => commerceHandling.checkoutBackStep()}
-                                            >
+                                            <Button variant="outlined" onClick={() => commerceHandling.checkoutBackStep()}>
                                                 Back
                                             </Button>
                                             <Button

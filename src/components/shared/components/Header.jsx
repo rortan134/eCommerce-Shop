@@ -196,14 +196,7 @@ function Header() {
                     </Grid>
                     <Grid item xs={8} className={styles.header__search}>
                         <form>
-                            <Grid
-                                container
-                                item
-                                alignItems="center"
-                                wrap="nowrap"
-                                direction="row"
-                                justifyContent="space-between"
-                            >
+                            <Grid container item alignItems="center" wrap="nowrap" direction="row" justifyContent="space-between">
                                 <InputBase
                                     placeholder="Search for products"
                                     inputProps={{ "aria-label": "search for products" }}
@@ -216,15 +209,7 @@ function Header() {
                             </Grid>
                         </form>
                     </Grid>
-                    <Grid
-                        item
-                        xs={8}
-                        container
-                        justifyContent="flex-end"
-                        alignItems="center"
-                        wrap="nowrap"
-                        direction="row"
-                    >
+                    <Grid item xs={8} container justifyContent="flex-end" alignItems="center" wrap="nowrap" direction="row">
                         <IconButton disableRipple className={styles.iconButton} title="Profile" aria-label="profile">
                             <PermIdentityOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
                         </IconButton>
@@ -239,13 +224,11 @@ function Header() {
                             className={styles.iconButton}
                             title="Cart"
                             aria-label="cart"
-                            classes={{root: styles.iconButton__root}}
+                            classes={{ root: styles.iconButton__root }}
                         >
                             <Grid container justifyContent="space-evenly" alignItems="center">
                                 <LocalMallOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
-                                <Typography variant="body2">
-                                    {commerceHandling.cartQty ? commerceHandling.cartQty : null}
-                                </Typography>
+                                <Typography variant="body2">{commerceHandling.cartQty ? commerceHandling.cartQty : null}</Typography>
                             </Grid>
                         </IconButton>
                         <IconButton
@@ -274,30 +257,17 @@ function Header() {
                             <MenuItem onClick={handleClose} component={NavLink} activeClassName="active" to="/news/">
                                 New in
                             </MenuItem>
-                            <MenuItem
-                                onClick={handleClose}
-                                component={NavLink}
-                                activeClassName="active"
-                                to="/products/"
-                            >
+                            <MenuItem onClick={handleClose} component={NavLink} activeClassName="active" to="/products/">
                                 Products
                             </MenuItem>
-                            <MenuItem
-                                onClick={handleClose}
-                                component={NavLink}
-                                activeClassName="active"
-                                to="/favorites/"
-                            >
+                            <MenuItem onClick={handleClose} component={NavLink} activeClassName="active" to="/favorites/">
                                 Favorites
                             </MenuItem>
                         </Menu>
                     </Grid>
                 </Grid>
             </AppBar>
-            <AppBar
-                position="sticky"
-                className={`${styles.header__subheader} ${!isAtTop ? styles.subheader__active : ""}`}
-            >
+            <AppBar position="sticky" className={`${styles.header__subheader} ${!isAtTop ? styles.subheader__active : ""}`}>
                 <Grid className={styles.subheader__content} container alignItems="center">
                     {commerceHandling.productCategories
                         ? Object.entries(commerceHandling.productCategories).map(([key, category]) => (

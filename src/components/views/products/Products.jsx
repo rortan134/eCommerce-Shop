@@ -34,11 +34,7 @@ function Products() {
     return (
         <div className={styles.products_container}>
             <Box component="section" className={styles.products__flex__wrapper}>
-                <Sidebar
-                    handlePriceChange={handlePriceChange}
-                    filterProducts={filterProducts}
-                    priceRange={priceRange}
-                />
+                <Sidebar handlePriceChange={handlePriceChange} filterProducts={filterProducts} priceRange={priceRange} />
                 <Grid className={styles.ProductGridContainer} container wrap="wrap" direction="row">
                     {productFiltered.slice(0, 6).map((product) => (
                         <Grid key={product.id} item xs={12} sm={6}>
