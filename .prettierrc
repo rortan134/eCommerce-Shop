@@ -15,5 +15,6 @@
     "vueIndentScriptAndStyle": false,
     "printWidth": 150,
     "tabWidth": 4,
-    "rangeStart": 0
+    "rangeStart": 0,
+    "endOfLine": "auto"
 }
