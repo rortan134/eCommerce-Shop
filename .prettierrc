@@ -16,5 +16,5 @@
     "printWidth": 150,
     "tabWidth": 4,
     "rangeStart": 0,
-    "endOfLine": "lf"
+    "endOfLine": "auto"
 }
