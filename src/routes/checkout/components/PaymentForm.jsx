@@ -1,10 +1,9 @@
-import CommerceHandler from "../../../contexts/commerce-context";
-import { useContext } from "react";
-import { Elements, CardElement, ElementsConsumer } from "@stripe/react-stripe-js";
+import { Button, Grid, Paper, Typography } from "@mui/material";
+import { CardElement, Elements, ElementsConsumer } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { useContext } from "react";
 
-import { Typography, Grid, Button, Paper } from "@material-ui/core";
-
+import CommerceHandler from "../../../contexts/commerce-context";
 import styles from "../styles.module.scss";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);

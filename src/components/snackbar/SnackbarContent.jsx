@@ -1,9 +1,10 @@
-import CommerceHandler from "../../contexts/commerce-context";
-import { useContext, memo } from "react";
-import { Snackbar, Slide, Button, Grid, Typography, IconButton } from "@material-ui/core";
+import { Button, Grid, IconButton, Slide, Snackbar, Typography } from "@mui/material";
+import CloseSharp from "@mui/icons-material/CloseSharp";
+import makeStyles from "@mui/styles/makeStyles";
+import { memo, useContext } from "react";
 import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import CloseSharp from "@material-ui/icons/CloseSharp";
+
+import CommerceHandler from "../../contexts/commerce-context";
 
 const useStyles = makeStyles({
     snackbarComponent: {
@@ -30,24 +31,18 @@ const useStyles = makeStyles({
         padding: ".35em 1.2em 1.2em 1.2em",
     },
     snackbar__action__btn: {
-        padding: " .5em 1em",
+        whiteSpace: "nowrap",
         "&:first-child": {
             marginRight: "8px",
-            border: "1px solid rgba(32, 36, 49, 1)",
         },
         "&:last-child": {
-            backgroundColor: "rgba(32, 36, 49, 1)",
-            color: "#ffffff",
-            "&:hover": {
-                backgrounColor: "rgba(32, 36, 49, .85)",
-            },
+            color: "#fff !important",
         },
     },
 });
 
 function SnackbarContent({ body, closeHandler }) {
     const commerceHandling = useContext(CommerceHandler);
-
     const styles = useStyles();
 
     const SnackbarTransition = (props) => <Slide {...props} direction="up" />;
@@ -55,13 +50,19 @@ function SnackbarContent({ body, closeHandler }) {
     const ToCartBtn = () =>
         commerceHandling.itemAddedToCart ? (
             <div>
-                <Grid container item className={styles.snackbar__action__container}>
-                    <Button className={styles.snackbar__action__btn} component={Link} to="/cart" variant="outlined" onClick={closeHandler}>
-                        Cart
-                    </Button>
-                    <Button className={styles.snackbar__action__btn} component={Link} to="/checkout" variant="contained">
-                        Proceed to payment
-                    </Button>
+                <Grid spacing={4} container item className={styles.snackbar__action__container}>
+                    <Grid item xs={12} md={4}>
+                        <Button className={styles.snackbar__action__btn} component={Link} to="/cart" variant="outlined" onClick={closeHandler}>
+                            <Typography variant="boldSubtitle">Cart</Typography>
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <Button className={styles.snackbar__action__btn} component={Link} to="/checkout" variant="contained">
+                            <Typography sx={{ color: "#fff" }} variant="boldSubtitle">
+                                Proceed to Payment
+                            </Typography>
+                        </Button>
+                    </Grid>
                 </Grid>
             </div>
         ) : (
@@ -80,14 +81,14 @@ function SnackbarContent({ body, closeHandler }) {
         <Snackbar
             autoHideDuration={10000}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            sx={{ right: "5% !important", bottom: "30px !important" }}
             TransitionComponent={SnackbarTransition}
             onClose={closeHandler}
-            className={body.open ? styles.openSnackbar : styles.snackbarClosed}
             open={body.open}
         >
             <Grid className={styles.snackbarComponent} container direction="column">
                 <div className={styles.snackbar__topSpacing}>
-                    <IconButton onClick={closeHandler}>
+                    <IconButton onClick={closeHandler} size="large">
                         <CloseSharp />
                     </IconButton>
                 </div>

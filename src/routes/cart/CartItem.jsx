@@ -1,5 +1,5 @@
-import { Typography, Button, Grid, Card, CardMedia, CardContent, CardActions, FormControl, NativeSelect, InputLabel } from "@material-ui/core";
-import DeleteForever from "@material-ui/icons/DeleteForever";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import { Button, Card, CardActions, CardContent, CardMedia, FormControl, Grid, InputLabel, NativeSelect, Typography } from "@mui/material";
 
 import styles from "./styles.module.scss";
 

@@ -1,6 +1,7 @@
-import CommerceHandler from "../../../contexts/commerce-context";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { Typography, Button, Paper, Grid } from "@material-ui/core";
+
+import CommerceHandler from "../../../contexts/commerce-context";
 import styles from "../styles.module.scss";
 
 function PaymentDetails() {

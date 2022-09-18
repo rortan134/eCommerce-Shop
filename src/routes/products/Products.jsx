@@ -1,14 +1,17 @@
-import CommerceHandler from "../../contexts/commerce-context";
-import { useContext, useState, useCallback, useEffect } from "react";
+import { Box, Grid } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import Sidebar from "./Sidebar";
-import Product from "./Product";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import styles from "./styles.module.scss";
+import Product from "../../components/Product";
+import CommerceHandler from "../../contexts/commerce-context";
+
+import Toolbar from "./Toolbar";
+
+const useStyles = makeStyles({});
 
 function Products() {
+    const styles = useStyles();
     const commerceHandling = useContext(CommerceHandler);
     const history = useHistory();
 
@@ -35,18 +38,9 @@ function Products() {
     return (
         <div className={styles.products_container}>
             <Box component="section" className={styles.products__flex__wrapper}>
-                <Sidebar handlePriceChange={handlePriceChange} filterProducts={filterProducts} priceRange={priceRange} />
                 <Grid className={styles.ProductGridContainer} container wrap="wrap" direction="row">
                     {productFiltered.slice(0, 6).map((product) => (
-                        <Grid key={product.id} item xs={12} sm={6}>
-                            <Product
-                                product={product}
-                                customClickEvent={() => {
-                                    let path = `/products/${product.permalink}`;
-                                    history.push(path);
-                                }}
-                            />
-                        </Grid>
+                        <Grid key={product.id} item xs={12} sm={6}></Grid>
                     ))}
                 </Grid>
             </Box>

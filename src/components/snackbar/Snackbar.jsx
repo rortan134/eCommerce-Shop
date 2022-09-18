@@ -1,6 +1,7 @@
-import { commerce } from "../../lib/commerce";
+import { useContext, useEffect, useReducer, useState } from "react";
+
 import CommerceHandler from "../../contexts/commerce-context";
-import { useState, useEffect, useContext, useReducer } from "react";
+import { commerce } from "../../lib/commerce";
 
 import SnackbarContent from "./SnackbarContent";
 
@@ -42,15 +43,16 @@ function SnackBar() {
     const [cookieShown, setCookieShown] = useState(localStorage.getItem("cookieWasAccepted"));
 
     useEffect(() => {
+        // Will trigger snackbox when message useState is set, and the content/payload provided will be rendered
         if (Object.entries(message).length !== 0) {
             dispatch({ type: reducerActions.SET_BODY, handler: message });
         }
     }, [message, dispatch]);
 
     useEffect(() => {
-        if (cookieShown === true) {
-            return;
-        } else if (!cookieShown) {
+        if (cookieShown === true) return;
+
+        if (!cookieShown) {
             const timer = setTimeout(() => {
                 setMessage({
                     content: "This website use cookies to personalize content and enhance the user experience.",

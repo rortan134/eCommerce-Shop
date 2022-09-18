@@ -1,6 +1,7 @@
-import CommerceHandler from "../../../contexts/commerce-context";
-import { Typography, List, ListItem, ListItemText, Paper, Divider, Grid, Button } from "@material-ui/core";
+import { Button, Divider, Grid, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
 import { useContext } from "react";
+
+import CommerceHandler from "../../../contexts/commerce-context";
 import styles from "../styles.module.scss";
 
 function Review() {

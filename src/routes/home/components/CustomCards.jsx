@@ -1,12 +1,12 @@
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { Button, CardActionArea, Container, Grid, Paper, Typography } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
-import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Typography, CardActionArea, Button, Grid, Container } from "@material-ui/core";
-import { ArrowForward, ArrowBack } from "@material-ui/icons";
 
+import { constants } from "../../../constants/commerce-constants";
 import useProducts from "../../../hooks/useProducts";
-import styles from "./styles.module.scss";
 
 const useStyles = makeStyles({
     card__wrapper: {
@@ -14,6 +14,7 @@ const useStyles = makeStyles({
         display: "flex",
         boxShadow: "0 0 0 transparent",
         marginRight: "0.6rem",
+        borderRadius: "0",
         "@media (max-width: 1000px)": {
             height: "40vh",
         },
@@ -86,15 +87,20 @@ const useStyles = makeStyles({
 });
 
 function CustomCards() {
-    const classes = useStyles();
+    const styles = useStyles();
     const history = useHistory();
 
-    const products = useProducts("category_slug", "new-in");
+    // Retrieve products
+    const { products, error } = useProducts("category_slug", "new-in");
 
     const [productsLength, setProductsLength] = useState({});
     const [responsive, setResponsive] = useState({});
 
     useEffect(() => {
+        if (error) {
+            console.log(error);
+            return;
+        }
         if (products && products.length >= 2) {
             setProductsLength({
                 breakpoint: { max: 4000, min: 900 },
@@ -105,7 +111,7 @@ function CustomCards() {
                 breakpoint: { max: 4000, min: 900 },
                 items: 1,
             });
-    }, [products]);
+    }, [products, error]);
 
     useEffect(() => {
         setResponsive({
@@ -119,94 +125,75 @@ function CustomCards() {
 
     const CustomRightArrow = ({ onClick }) => {
         return (
-            <button className={classes.custom__arrow} onClick={() => onClick()}>
+            <button className={styles.custom__arrow} onClick={() => onClick()}>
                 <ArrowForward />
             </button>
         );
     };
     const CustomLeftArrow = ({ onClick }) => {
         return (
-            <button style={{ left: "0" }} className={classes.custom__arrow} onClick={() => onClick()}>
+            <button style={{ left: "0" }} className={styles.custom__arrow} onClick={() => onClick()}>
                 <ArrowBack />
             </button>
         );
     };
 
     return (
-        <div className={styles.carousel__wrapper}>
-            <Container className={styles.carousel_content}>
-                <div>
-                    {products ? (
-                        <Carousel
-                            responsive={responsive}
-                            ssr={true}
-                            autoPlay={false}
-                            draggable={false}
-                            transitionDuration={500}
-                            customRightArrow={<CustomRightArrow />}
-                            customLeftArrow={<CustomLeftArrow />}
-                            containerClass={classes.card__container}
+        <Container className={styles.carousel__wrapper}>
+            {products ? (
+                <Carousel
+                    responsive={responsive}
+                    ssr={true}
+                    autoPlay={false}
+                    draggable={false}
+                    transitionDuration={500}
+                    customRightArrow={<CustomRightArrow />}
+                    customLeftArrow={<CustomLeftArrow />}
+                    containerClass={styles.card__container}
+                >
+                    {products.map((product) => (
+                        <Paper
+                            className={`custom__card__wrapper ${styles.card__wrapper}`}
+                            style={{
+                                background: `url(${product.attributes
+                                    .map((attribute) => (attribute.id === constants.productBg && attribute.value !== null ? attribute.value : ""))
+                                    .join("")})`,
+                            }}
+                            key={product.id}
                         >
-                            {products
-                                ? products.map((product) => (
-                                      <Paper
-                                          className={`custom__card__wrapper ${classes.card__wrapper}`}
-                                          style={{
-                                              background: `url(${product.attributes
-                                                  .map((attribute) =>
-                                                      attribute.id === "attr_LkpnNwAqawmXB3" && attribute.value !== null ? attribute.value : ""
-                                                  )
-                                                  .join("")})`,
-                                          }}
-                                          key={product.id}
-                                      >
-                                          <CardActionArea
-                                              className={classes.action__area}
-                                              component="span"
-                                              onClick={() => {
-                                                  let path = `/products/${product.permalink}`;
-                                                  history.push(path);
-                                              }}
-                                          >
-                                              <Grid
-                                                  container
-                                                  justifyContent="space-between"
-                                                  className={`action__area__grid ${classes.action__area__grid}`}
-                                              >
-                                                  <Grid item zeroMinWidth md={4} xs={6} className={`card__image__wrap ${classes.card__image__wrap}`}>
-                                                      <img src={product.image.url} alt={product.name} />
-                                                  </Grid>
-                                                  <Grid
-                                                      container
-                                                      item
-                                                      md={8}
-                                                      xs={12}
-                                                      direction="column"
-                                                      className={`card__actions ${classes.card__actions}`}
-                                                  >
-                                                      <Grid item xs={12}>
-                                                          <Typography variant="h5">{product.name}</Typography>
-                                                          <Button
-                                                              variant="text"
-                                                              onClick={() => {
-                                                                  let path = `/products/${product.permalink}`;
-                                                                  history.push(path);
-                                                              }}
-                                                          >
-                                                              Discover
-                                                          </Button>
-                                                      </Grid>
-                                                  </Grid>
-                                              </Grid>
-                                          </CardActionArea>
-                                      </Paper>
-                                  ))
-                                : null}
-                        </Carousel>
-                    ) : null}
-                </div>
-            </Container>
-        </div>
+                            <CardActionArea
+                                className={styles.action__area}
+                                component="span"
+                                onClick={() => {
+                                    let path = `/products/${product.permalink}`;
+                                    history.push(path);
+                                }}
+                            >
+                                <Grid container justifyContent="space-between" className={`action__area__grid ${styles.action__area__grid}`}>
+                                    <Grid item zeroMinWidth md={4} xs={6} className={`card__image__wrap ${styles.card__image__wrap}`}>
+                                        <img src={product.image.url} alt={product.name} />
+                                    </Grid>
+                                    <Grid container item md={8} xs={12} direction="column" className={`card__actions ${styles.card__actions}`}>
+                                        <Grid item xs={12}>
+                                            <Typography variant="h5">{product.name}</Typography>
+                                            <Button
+                                                variant="text"
+                                                onClick={() => {
+                                                    let path = `/products/${product.permalink}`;
+                                                    history.push(path);
+                                                }}
+                                            >
+                                                Discover
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </CardActionArea>
+                        </Paper>
+                    ))}
+                </Carousel>
+            ) : null}
+        </Container>
     );
 }
 

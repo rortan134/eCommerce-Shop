@@ -3,3 +3,4 @@ build/
 website/build/
 apis/
 hooks/
+*.svg

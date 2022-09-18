@@ -1,23 +1,30 @@
-import { commerce } from "../lib/commerce";
 import { useEffect, useState } from "react";
+import { commerce } from "../lib/commerce";
+
+// Fetch products inside any component
+// Usage:
+// const { products, error } = useProducts("category_slug", "your-category-slug");
 
 export default function useProducts(method, payload) {
     const [products, setProducts] = useState();
+    const [error, setError] = useState(null)
 
     useEffect(() => {
-        console.log("request:", method, payload);
-            const getProducts = async () => {
-                if (method && payload) {
-                    const { data } = await commerce.products.list({ [method.toString()]: payload });
-                    setProducts(data);
-                } else {
-                    const { data } = await commerce.products.list();
-                    setProducts(data);
-                    
-                }
+            const getProducts = async () => {  
+                    try {
+                        if (method && payload) {
+                            const { data } = await commerce.products.list({ [method.toString()]: payload });
+                            setProducts(data); 
+                        } else {
+                            const { data } = await commerce.products.list();
+                            setProducts(data); 
+                        }
+                    } catch(error) {
+                        setError(error);
+                    }
             };
             getProducts();
     }, [method, payload]);
 
-    return products;
+    return { products, error };
 }

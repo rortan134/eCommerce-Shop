@@ -1,14 +1,14 @@
+import CloseSharp from "@mui/icons-material/CloseSharp";
+import { Button, Container, Grid, IconButton, TextField, Typography } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import { useContext } from "react";
-import CommerceHandler from "../../contexts/commerce-context";
 import { NavLink } from "react-router-dom";
-import styles from "./styles.module.scss";
 
-import { Container, Typography, Button, Grid, TextField, IconButton } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import CloseSharp from "@material-ui/icons/CloseSharp";
+import { ShoppingSvg } from "../../assets/index";
+import CommerceHandler from "../../contexts/commerce-context";
 
-import shoppingSVG from "../../assets/Shopping.svg";
 import CartItem from "./CartItem";
+import styles from "./styles.module.scss";
 
 const emptyCartStyle = makeStyles({
     inputStyle: {
@@ -46,15 +46,15 @@ function Cart() {
             <Container className={styles.allAround_cartWrapper}>
                 <div className={styles.topSpacing}>
                     <Typography variant="h4">Your Cart</Typography>
-                    <IconButton component={NavLink} to="./">
+                    <IconButton component={NavLink} to="./" size="large">
                         <CloseSharp style={{ color: "#222222" }} />
                     </IconButton>
                 </div>
                 <div className={styles.cartScrollable}>
                     {isEmpty ? (
                         <div className={styles.emptyCart_wrapper}>
-                            <img src={shoppingSVG} alt="Shop Now"></img>
-                            <h1>Your Cart is Empty, Start shopping some things!</h1>
+                            <img src={ShoppingSvg} alt="Shop Now" />
+                            <Typography variant="defaultBody">Your Cart is Empty, Start shopping some things!</Typography>
                             <NavLink to="/products/">Check our products</NavLink>
                         </div>
                     ) : (

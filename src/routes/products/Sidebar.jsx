@@ -1,6 +1,5 @@
+import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid, Slider, Typography } from "@mui/material";
 import { useState } from "react";
-import { Box, Typography, Grid, Checkbox, FormControlLabel, FormGroup, Slider, Button } from "@material-ui/core";
-import styles from "./styles.module.scss";
 
 function valuetext(value) {
     return `€${value}`;
@@ -15,12 +14,12 @@ function Sidebar({ handlePriceChange, priceRange, filterProducts }) {
     };
 
     return (
-        <Box className={styles.sidebarWrapper}>
-            <div className={styles.sidebarInnerWrapper}>
-                <Typography className={styles.title} variant="subtitle1" align="left">
+        <Box>
+            <div>
+                <Typography variant="subtitle1" align="left">
                     Price
                 </Typography>
-                <Grid container direction="row" justifyContent="space-between" alignItems="center" className={styles.wrap__1}>
+                <Grid container direction="row" justifyContent="space-between" alignItems="center">
                     <Slider
                         getAriaLabel={() => "Price range"}
                         value={priceRange}
@@ -29,15 +28,14 @@ function Sidebar({ handlePriceChange, priceRange, filterProducts }) {
                         valueLabelDisplay="auto"
                         defaultValue={priceRange}
                         max={4000}
-                        classes={{ root: styles.sliderWrapper }}
                     />
                     <Grid container direction="row" justifyContent="space-between" alignItems="center">
                         <Grid item md={4} xs={12}>
                             <Button
                                 onClick={() => filterProducts()}
-                                size="small"
                                 variant="contained"
-                                style={{ background: "#2d3245", color: "#ffffff", borderRadius: "30px" }}
+                                size="small"
+                                style={{ borderRadius: "30px", margin: ".6rem 0" }}
                             >
                                 Filter
                             </Button>
@@ -50,15 +48,15 @@ function Sidebar({ handlePriceChange, priceRange, filterProducts }) {
                     </Grid>
                 </Grid>
             </div>
-            <div className={styles.sidebarInnerWrapper}>
-                <Typography className={styles.title} variant="subtitle1" align="left">
+            <div>
+                <Typography variant="subtitle1" align="left">
                     Filter
                 </Typography>
                 <Box>
-                    <Typography className={styles.subtitle} variant="subtitle2" align="left">
+                    <Typography variant="subtitle2" align="left">
                         Materials
                     </Typography>
-                    <FormGroup classes={{ root: styles.checkboxesContainer }}>
+                    <FormGroup>
                         <FormControlLabel
                             control={<Checkbox onChange={handleChange} name="check1" color="default" />}
                             label="Synthetic Skin (6)"

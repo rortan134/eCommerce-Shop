@@ -1,6 +1,5 @@
+import React, { createContext, useCallback, useEffect, useReducer, useState } from "react";
 import { commerce } from "../lib/commerce";
-import React, { createContext, useState, useReducer, useEffect, useCallback } from "react";
-//import useProducts from "./utils/useProducts";
 
 const CommerceHandler = createContext({
     cart: {},
@@ -8,16 +7,13 @@ const CommerceHandler = createContext({
     products: [],
     categories: {},
     itemAddedToCart: undefined,
-    itemRemovedFromCart: {},
     activeStep: 0,
     shippingData: {},
     checkoutToken: null,
     order: {},
     errorMessage: "",
     currentShipping: null,
-    attributesExceptions: ["attr_gNXELwj1rl3A4p", "new-in", "attr_LkpnNwAqawmXB3"],
     merchant: {},
-    estimatedLocation: {},
 });
 
 const reducerActions = {
@@ -50,9 +46,7 @@ function reducer(state, action) {
                 merchant: action.payload,
             };
         default:
-            return {
-                ...state,
-            };
+            throw new Error(`Unknown action: ${action.type}`);
     }
 }
 
@@ -64,40 +58,38 @@ export function CommerceProvider(props) {
         merchant: {},
     });
 
-    const [itemAddedToCart, setItemAddedToCart] = useState(undefined);
+    const [itemAddedToCart, setItemAddedToCart] = useState(undefined); // Last item added to cart
+    const [errorMessage, setErrorMessage] = useState("");
+
+    // Checkout state
     const [shippingData, setShippingData] = useState({});
     const [checkoutToken, setCheckoutToken] = useState(null);
     const [activeStep, setActiveStep] = useState(0);
-    const [order, setOrder] = useState({});
-    const [errorMessage, setErrorMessage] = useState("");
     const [currentShipping, setCurrentShipping] = useState();
-    const [estimatedLocation, setEstimatedLocation] = useState({});
+    const [order, setOrder] = useState({});
 
-    const attributesExceptions = ["attr_gNXELwj1rl3A4p", "attr_LkpnNwAqawmXB3"];
-
+    // Fetch everything at once
     useEffect(() => {
-        const fetchProductsHandler = async () => {
-            const data = await commerce.products.list({
-                active: 1,
-            });
-            dispatch({ type: reducerActions.UPDATE_PRODUCTS, payload: data.data });
+        const fetchAll = async () => {
+            try {
+                await Promise.all([
+                    commerce.products.list({
+                        active: 1,
+                    }),
+                    commerce.categories.list(),
+                    commerce.cart.retrieve(),
+                    commerce.merchants.about(),
+                ]).then(([products, categories, cart, merchant]) => {
+                    dispatch({ type: reducerActions.UPDATE_PRODUCTS, payload: products.data });
+                    dispatch({ type: reducerActions.UPDATE_CATEGORIES, payload: categories.data });
+                    dispatch({ type: reducerActions.UPDATE_CART, payload: cart });
+                    dispatch({ type: reducerActions.UPDATE_MERCHANT, payload: merchant.data });
+                });
+            } catch (error) {
+                console.log(error);
+            }
         };
-        fetchProductsHandler();
-        const fetchProductCategories = async () => {
-            const { data } = await commerce.categories.list();
-            dispatch({ type: reducerActions.UPDATE_CATEGORIES, payload: data });
-        };
-        fetchProductCategories();
-        const fetchMerchantHandler = async () => {
-            const data = await commerce.merchants.about();
-            dispatch({ type: reducerActions.UPDATE_MERCHANT, payload: data });
-        };
-        fetchMerchantHandler();
-        const fetchCartHandler = async () => {
-            const data = await commerce.cart.retrieve();
-            dispatch({ type: reducerActions.UPDATE_CART, payload: data });
-        };
-        fetchCartHandler();
+        fetchAll();
     }, []);
 
     // Cart Handlers
@@ -161,10 +153,6 @@ export function CommerceProvider(props) {
         }
     };
 
-    const getShippingLocationFromIp = (checkoutTokenId, ip) => {
-        commerce.checkout.getLocationFromIP(checkoutTokenId, ip).then((adress) => setEstimatedLocation(adress));
-    };
-
     const checkoutNextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
     const checkoutBackStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
@@ -187,17 +175,13 @@ export function CommerceProvider(props) {
         checkoutToken: checkoutToken,
         currentShipping: currentShipping,
 
-        attributesExceptions: attributesExceptions,
-
         order: order,
         onCaptureCheckout: handleCaptureCheckout,
         error: errorMessage,
-        getShippingLocationFromIp: getShippingLocationFromIp,
-        estimatedLocation: estimatedLocation,
 
         addToCart: handleAddToCart,
-        removeFromCart: handleRemoveFromCart,
         updateCartQty: handleUpdateCartQty,
+        removeFromCart: handleRemoveFromCart,
 
         itemAddedToCart: itemAddedToCart,
         removeItemAddedWarning: removeItemAddedWarning,

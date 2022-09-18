@@ -1,44 +1,29 @@
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import MenuIcon from "@mui/icons-material/Menu";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { AppBar, Grid, IconButton, InputBase, Menu, MenuItem, Typography, Collapse, Box } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { useContext, useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import { Logo } from "../../assets/index";
 import CommerceHandler from "../../contexts/commerce-context";
-import { useState, useEffect, useContext } from "react";
-import { NavLink, Link } from "react-router-dom";
 
-import { AppBar, IconButton, Grid, Menu, MenuItem, Typography, InputBase } from "@material-ui/core";
-
-import { ReactComponent as Logo } from "../../assets/logo.svg";
-import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
-import PermIdentityOutlinedIcon from "@material-ui/icons/PermIdentityOutlined";
-import LocalMallOutlinedIcon from "@material-ui/icons/LocalMallOutlined";
-import MenuIcon from "@material-ui/icons/Menu";
-import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
-
-import { makeStyles } from "@material-ui/core/styles";
+import Upperheader from "./Upperheader";
+import Subcategories from "./Subcategories";
 
 const useStyles = makeStyles({
-    upperHeader: {
-        width: "100%",
-        background: "#2D3245",
-        boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
-        padding: ".7em 5%",
-        maxHeight: "40px",
-        fontSize: ".8em",
-        position: "relative",
-        zIndex: "999",
-        color: "#ffffff",
-        "& a": {
-            color: "#ffffff",
-        },
-    },
     header: {
         display: "flex",
-        flexDirection: "row",
-        background: "#ffffff",
+        flexDirection: "column",
+        backgroundColor: "#ffffff !important",
         fontFamily: "roboto",
         fontWeight: "400",
-        boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
+        boxShadow: "0 0 0 transparent !important",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "0 5% 0 5%",
-        height: "85px",
+        padding: "0 5%",
         transition: "all 0.5s ease-in-out",
         "& a": {
             color: "#222222",
@@ -63,8 +48,6 @@ const useStyles = makeStyles({
     },
     header__extended: {
         borderBottom: "solid 1px rgba(0,0,0,0.15)",
-        padding: "0 5% 0 5%",
-        height: "75px",
     },
     iconButton: {
         padding: "0.4rem",
@@ -108,42 +91,18 @@ const useStyles = makeStyles({
     header__search__focused: {
         width: "350px",
     },
-    header__subheader: {
-        fontWeight: "500",
-        display: "flex",
-        flexDirection: "row",
-        boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
-        background: "#ffffff",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: ".4rem 5% 2rem 5%",
-        transition: "all 0.5s ease-in-out",
-        color: "rgba(0,0,0,0.8)",
-    },
-    subheader__content__category: {
-        padding: "0 2.5rem 0 0",
-        "&:hover": {
-            transform: "scale(1.05)",
-            fontWeight: "600",
-        },
-    },
-    subheader__active: {
-        transform: "translateY(-200px)",
-        zIndex: "-999",
-    },
 });
+
 function Header() {
     const styles = useStyles();
     const commerceHandling = useContext(CommerceHandler);
 
-    const [isAtTop, setAtTop] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(true);
     const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
-        window.onscroll = function () {
-            if (window.pageYOffset <= 50) {
-                setAtTop(true);
-            } else setAtTop(false);
+        window.onscroll = () => {
+            window.pageYOffset > 49 ? setIsExpanded(false) : setIsExpanded(true);
         };
     });
 
@@ -157,24 +116,9 @@ function Header() {
 
     return (
         <>
-            <AppBar position="static" className={styles.upperHeader}>
-                <Grid container direction="row" justifyContent="space-around" alignItems="center">
-                    <Grid item>
-                        <Typography variant="subtitle2">contact@gmail.com</Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography component={Link} to="/" variant="subtitle2">
-                            Test the Shopping System
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="subtitle2">Help Center</Typography>
-                    </Grid>
-                </Grid>
-            </AppBar>
-
-            <AppBar position="sticky" className={`${styles.header} ${!isAtTop ? styles.header__extended : ""}`}>
-                <Grid container justifyContent="space-between" alignItems="center" direction="row" wrap="nowrap">
+            <Upperheader />
+            <AppBar position="sticky" className={`${styles.header} ${!isExpanded ? styles.header__extended : ""}`}>
+                <Grid sx={{ padding: ".5rem 0" }} container justifyContent="space-between" alignItems="center" direction="row" wrap="nowrap">
                     <Grid item xs={2}>
                         <a href="/">
                             <Logo />
@@ -191,7 +135,7 @@ function Header() {
                         className={styles.header__links}
                     >
                         <NavLink to="/products">SHOP</NavLink>
-                        <NavLink to="/">SOMETHING</NavLink>
+                        <NavLink to="/">SUPPORT</NavLink>
                         <NavLink to="/">ABOUT</NavLink>
                     </Grid>
                     <Grid item xs={8} className={styles.header__search}>
@@ -210,10 +154,10 @@ function Header() {
                         </form>
                     </Grid>
                     <Grid item xs={8} container justifyContent="flex-end" alignItems="center" wrap="nowrap" direction="row">
-                        <IconButton disableRipple className={styles.iconButton} title="Profile" aria-label="profile">
+                        <IconButton disableRipple className={styles.iconButton} title="Profile" aria-label="profile" size="large">
                             <PermIdentityOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
                         </IconButton>
-                        <IconButton disableRipple className={styles.iconButton} title="Search" aria-label="search">
+                        <IconButton disableRipple className={styles.iconButton} title="Search" aria-label="search" size="large">
                             <FavoriteBorder className={styles.icons} style={{ color: "#222222" }} />
                         </IconButton>
                         <IconButton
@@ -225,6 +169,7 @@ function Header() {
                             title="Cart"
                             aria-label="cart"
                             classes={{ root: styles.iconButton__root }}
+                            size="large"
                         >
                             <Grid container justifyContent="space-evenly" alignItems="center">
                                 <LocalMallOutlinedIcon className={styles.icons} style={{ color: "#222222" }} />
@@ -239,6 +184,7 @@ function Header() {
                             aria-expanded={open ? "true" : undefined}
                             onClick={handleClick}
                             aria-label="menu"
+                            size="large"
                         >
                             <MenuIcon className={styles.iconButton} />
                         </IconButton>
@@ -267,17 +213,11 @@ function Header() {
                     </Grid>
                 </Grid>
             </AppBar>
-            <AppBar position="sticky" className={`${styles.header__subheader} ${!isAtTop ? styles.subheader__active : ""}`}>
-                <Grid className={styles.subheader__content} container alignItems="center">
-                    {commerceHandling.productCategories
-                        ? Object.entries(commerceHandling.productCategories).map(([key, category]) => (
-                              <Typography className={styles.subheader__content__category} key={key} variant="body1">
-                                  {category.name}
-                              </Typography>
-                          ))
-                        : null}
-                </Grid>
-            </AppBar>
+            <Box sx={{ width: "100%", minHeight: "56px", padding: "0 5%", background: "#ffffff", position: "relative", zIndex: "1000" }}>
+                <Collapse sx={{ width: "100%" }} in={isExpanded}>
+                    <Subcategories />
+                </Collapse>
+            </Box>
         </>
     );
 }

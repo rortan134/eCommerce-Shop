@@ -1,13 +1,12 @@
-// Dependencies
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
+
+import App from "./App";
 import { CommerceProvider } from "./contexts/commerce-context";
 
 import "normalize.css";
 import "./index.scss";
-
-import App from "./App";
 
 ReactDOM.render(
     <CommerceProvider>

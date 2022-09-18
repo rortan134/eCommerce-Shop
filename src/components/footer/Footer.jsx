@@ -1,3 +1,5 @@
+import Brands from "./Brands";
+
 function Footer() {
     return <></>;
 }

@@ -1,37 +1,38 @@
-import { useEffect, useContext, useState } from "react";
-import CommerceHandler from "../../contexts/commerce-context";
-import { Link, useHistory } from "react-router-dom";
 import {
-    Stepper,
-    Step,
-    StepLabel,
-    Grid,
-    Typography,
-    CircularProgress,
     Button,
-    Paper,
+    CircularProgress,
     Divider,
+    Grid,
     List,
     ListItem,
     ListItemText,
+    Paper,
+    Step,
     StepConnector,
-} from "@material-ui/core";
+    StepLabel,
+    Stepper,
+    Typography,
+} from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+
+import {
+    CheckoutIcon,
+    CheckoutIconActive,
+    CheckoutComplete,
+    ConfirmIcon,
+    ConfirmIconActive,
+    PaymentIcon,
+    PaymentIconActive,
+    TimeSvg,
+} from "../../assets/index";
+
+import CommerceHandler from "../../contexts/commerce-context";
 
 import AdressForm from "./components/AdressForm";
 import PaymentDetails from "./components/PaymentDetails";
 import PaymentForm from "./components/PaymentForm";
 import Review from "./components/Review";
-
-import { ReactComponent as CheckoutIcon } from "../../assets/checkout.svg";
-import { ReactComponent as PaymentIcon } from "../../assets/payment.svg";
-import { ReactComponent as ConfirmIcon } from "../../assets/confirm.svg";
-import { ReactComponent as CheckoutIconActive } from "../../assets/checkoutAct.svg";
-import { ReactComponent as PaymentIconActive } from "../../assets/paymentAct.svg";
-import { ReactComponent as ConfirmIconActive } from "../../assets/confirmAct.svg";
-
-import { ReactComponent as CheckoutComplete } from "../../assets/checkoutComplete.svg";
-import { ReactComponent as TimeSvg } from "../../assets/time.svg";
-
 import styles from "./styles.module.scss";
 
 const steps = ["1. Checkout", "2. Payment", "3. Confirmation"];
@@ -59,15 +60,6 @@ function Checkout() {
         checkIfCartIsEmpty();
     }, [generateToken, commerceHandling.cart.line_items]);
 
-    const Form = () =>
-        commerceHandling.activeStep === 0 ? (
-            <AdressForm checkoutToken={commerceHandling.checkoutToken} />
-        ) : (
-            <>
-                <PaymentDetails />
-            </>
-        );
-
     let items = commerceHandling.checkoutToken
         ? commerceHandling.checkoutToken.live.line_items.map((product) => ({
               productId: product.id,
@@ -77,6 +69,15 @@ function Checkout() {
               productPrice: product.line_total.formatted_with_symbol,
           }))
         : null;
+
+    const Form = () =>
+        commerceHandling.activeStep === 0 ? (
+            <AdressForm checkoutToken={commerceHandling.checkoutToken} />
+        ) : (
+            <>
+                <PaymentDetails />
+            </>
+        );
 
     const CheckoutError = () =>
         cartIsEmpty ? (
@@ -89,7 +90,7 @@ function Checkout() {
             </>
         ) : null;
 
-    let Confirmation = () =>
+    const Confirmation = () =>
         commerceHandling.order.customer && commerceHandling.currentShipping ? (
             <>
                 <Grid container spacing={4}>

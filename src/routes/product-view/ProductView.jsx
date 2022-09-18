@@ -1,27 +1,19 @@
-import { commerce } from "../../lib/commerce";
-import { useContext, useState, useEffect } from "react";
-import CommerceHandler from "../../contexts/commerce-context";
-import { makeStyles } from "@material-ui/core/styles";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import { Button, Container, Divider, Grid, IconButton, Tab, Tabs, Typography } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import PropTypes from "prop-types";
-import SwipeableViews from "react-swipeable-views";
+import { Redirect } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import ReactImageMagnify from "react-image-magnify";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import SwipeableViews from "react-swipeable-views";
+import { constants } from "../../constants/commerce-constants";
+import CommerceHandler from "../../contexts/commerce-context";
+import { commerce } from "../../lib/commerce";
 
-import {
-    Button,
-    Radio,
-    Typography,
-    Container,
-    FormControl,
-    FormControlLabel,
-    RadioGroup,
-    IconButton,
-    Grid,
-    Tabs,
-    Tab,
-    Divider,
-} from "@material-ui/core";
+import recentlyViewed from "../../features/recentlyViewed/recentlyViewed";
+import AddToCart from "../../components/AddToCart";
+import ImageDisplay from "../../components/ImageDisplay";
 
 const useStyles = makeStyles({
     component__wrapper: {
@@ -30,7 +22,6 @@ const useStyles = makeStyles({
         padding: "0",
         height: "100%",
         overflowY: "auto",
-        minHeight: "95vh",
         position: "relative",
         top: "0",
     },
@@ -46,25 +37,6 @@ const useStyles = makeStyles({
         },
         "& div": {
             maxWidth: "500px",
-        },
-    },
-    imageDemoButton: {
-        background: "#ffffff",
-        width: "60px",
-        height: "60px",
-        borderRadius: "0 !important",
-        margin: "4px",
-        "& img": {
-            objectFit: "cover",
-            objectPosition: "center",
-            width: "100%",
-            height: "100%",
-        },
-        "& div": {
-            objectFit: "cover",
-            objectPosition: "center",
-            width: "100%",
-            height: "100%",
         },
     },
     actionButton: {
@@ -108,7 +80,23 @@ function ProductView({ match }) {
     const [activeImgUrl, setActiveImgUrl] = useState();
     const [productQty, setProductQty] = useState(1);
     const [product, setProduct] = useState({});
+    const [value, setValue] = useState(0);
     const [invalidProduct, setProductIsInvalid] = useState(false);
+
+    useEffect(() => {
+        try {
+            commerce.products.retrieve(match.params.permalink, { type: "permalink" }).then((currProduct) => {
+                setProduct(currProduct);
+            });
+        } catch (error) {
+            setProductIsInvalid(true);
+            console.log(error);
+        }
+    }, [match.params.permalink]);
+
+    useEffect(() => {
+        setActiveImgUrl(product.assets ? product.assets[0] : null);
+    }, [product]);
 
     const increaseQty = () => {
         if (productQty >= product.inventory.available && product.inventory.managed) {
@@ -122,22 +110,6 @@ function ProductView({ match }) {
         }
     };
 
-    useEffect(() => {
-        commerce.products
-            .retrieve(match.params.permalink, { type: "permalink" })
-            .then((currProduct) => setProduct(currProduct))
-            .catch(() => setProductIsInvalid(true));
-    }, [match.params.permalink]);
-
-    useEffect(() => {
-        setActiveImgUrl(product.assets ? product.assets[0] : null);
-    }, [product]);
-
-    const [checkbox, setCheckbox] = useState("color1");
-    const handleRadio = (event) => {
-        setCheckbox(event.target.value);
-    };
-
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
 
@@ -145,7 +117,7 @@ function ProductView({ match }) {
             <div role="tabpanel" hidden={value !== index} id={`full-width-tabpanel-${index}`} aria-labelledby={`full-width-tab-${index}`} {...other}>
                 {value === index && (
                     <Container sx={{ p: 3 }} className={styles.product__description__container}>
-                        <div>{children}</div>
+                        <>{children}</>
                     </Container>
                 )}
             </div>
@@ -164,8 +136,6 @@ function ProductView({ match }) {
             "aria-controls": `full-width-tabpanel-${index}`,
         };
     }
-
-    const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -194,168 +164,115 @@ function ProductView({ match }) {
     return (
         <>
             {invalidProduct ? (
-                <div>Product not found.</div>
+                <Redirect to="/404" />
             ) : (
-                <Container className={styles.component__wrapper}>
-                    <Container style={{ borderRadius: "20px", marginTop: "20px", maxWidth: "90%" }}>
-                        <Container>
-                            <Grid container className={styles.product__container}>
-                                <Grid container item>
-                                    <Grid
-                                        className={styles.product__content}
-                                        item
-                                        container
-                                        xs={12}
-                                        md={6}
-                                        justifyContent="center"
-                                        alignItems="center"
-                                    >
-                                        <Grid item xs={12}>
-                                            <ReactImageMagnify
-                                                className={styles.product__image}
-                                                {...{
-                                                    smallImage: {
-                                                        alt: `${product ? product.name : null}`,
-                                                        src: `${activeImgUrl ? activeImgUrl.url : null}`,
-                                                        isFluidWidth: true,
-                                                    },
-                                                    largeImage: {
-                                                        width: activeImgUrl ? activeImgUrl.image_dimensions.width : null,
-                                                        height: activeImgUrl ? activeImgUrl.image_dimensions.height : null,
-                                                        src: `${activeImgUrl ? activeImgUrl.url : null}`,
-                                                    },
-                                                    enlargedImagePortalId: "magnified__portal",
-                                                    shouldUsePositiveSpaceLens: true,
-                                                    isHintEnabled: true,
-                                                    shouldHideHintAfterFirstActivation: false,
-                                                    hintComponent: zoomHintComponent,
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid container direction="row" justifyContent="center" alignItems="center" className="activeImgWrapper">
-                                            {product.assets
-                                                ? product.assets.map((images) => (
-                                                      <Grid key={images.id} item zeroMinWidth>
-                                                          <IconButton
-                                                              onClick={() => setActiveImgUrl(images)}
-                                                              onMouseEnter={() => setActiveImgUrl(images)}
-                                                              className={styles.imageDemoButton}
-                                                          >
-                                                              <img src={images.url} width="25px" alt="Buy now" />
-                                                          </IconButton>
-                                                      </Grid>
-                                                  ))
-                                                : null}
-                                        </Grid>
-                                    </Grid>
-                                    <Grid
-                                        className={styles.product__content}
-                                        container
-                                        direction="column"
-                                        item
-                                        xs={12}
-                                        md={6}
-                                        justifyContent="space-around"
-                                    >
-                                        <div id="magnified__portal" className={styles.image__portal} />
-                                        <Grid item container justifyContent="space-between" alignItems="center" wrap="nowrap">
-                                            <Typography variant="h4">{product ? product.name : null}</Typography>
-                                            <IconButton style={{ background: "#F5F6F4" }}>
-                                                <FavoriteBorderIcon style={{ color: "#2d3245" }} />
-                                            </IconButton>
-                                        </Grid>
-                                        <Typography
-                                            align="left"
-                                            style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
-                                            dangerouslySetInnerHTML={{
-                                                __html: product ? product.description : null,
+                <>
+                    <Container className={styles.component__wrapper}>
+                        <Grid container className={styles.product__container}>
+                            <Grid container item>
+                                <Grid className={styles.product__content} item container xs={12} md={6} justifyContent="center" alignItems="center">
+                                    <Grid item xs={12}>
+                                        <ReactImageMagnify
+                                            className={styles.product__image}
+                                            {...{
+                                                smallImage: {
+                                                    alt: `${product ? product.name : null}`,
+                                                    src: `${activeImgUrl ? activeImgUrl.url : null}`,
+                                                    isFluidWidth: true,
+                                                },
+                                                largeImage: {
+                                                    width: activeImgUrl ? activeImgUrl.image_dimensions.width : null,
+                                                    height: activeImgUrl ? activeImgUrl.image_dimensions.height : null,
+                                                    src: `${activeImgUrl ? activeImgUrl.url : null}`,
+                                                },
+                                                enlargedImagePortalId: "magnified__portal",
+                                                shouldUsePositiveSpaceLens: true,
+                                                isHintEnabled: true,
+                                                shouldHideHintAfterFirstActivation: false,
+                                                hintComponent: zoomHintComponent,
                                             }}
                                         />
-                                        <Typography gutterBottom variant="h6">
-                                            {product.price ? product.price.formatted_with_symbol : null}
-                                        </Typography>
-                                        <FormControl component="fieldset" style={{ width: "100%", marginBottom: "3rem" }}>
-                                            <RadioGroup
-                                                style={{ flexWrap: "nowrap" }}
-                                                aria-label="colors"
-                                                row
-                                                className="radioGroup"
-                                                name="colors"
-                                                value={checkbox}
-                                                onChange={handleRadio}
-                                            >
-                                                <FormControlLabel value="color1" control={<Radio color="primary" />} label="" />
-                                                <FormControlLabel value="color2" control={<Radio color="secondary" />} label="" />
-                                                <FormControlLabel value="color3" control={<Radio color="primary" />} label="" />
-                                                <FormControlLabel value="color4" control={<Radio color="default" />} label="" />
-                                            </RadioGroup>
-                                        </FormControl>
-                                        <Grid container item alignItems="center" wrap="nowrap" style={{ marginBottom: "1.5rem" }}>
-                                            <Button
-                                                onClick={() => {
-                                                    decreaseQty();
-                                                }}
-                                                className={styles.actionButton}
-                                                type="button"
-                                                size="small"
-                                            >
-                                                -
-                                            </Button>
-                                            <Typography style={{ marginRight: "0.8em" }}>{productQty}</Typography>
-                                            <Button
-                                                onClick={() => {
-                                                    increaseQty();
-                                                }}
-                                                className={styles.actionButton}
-                                                type="button"
-                                                size="small"
-                                            >
-                                                +
-                                            </Button>
-                                            <Button
-                                                style={{
-                                                    background: "#2d3245",
-                                                    color: "#ffffff",
-                                                }}
-                                                className={styles.actionPaymentOptions}
-                                                variant="contained"
-                                                size="large"
-                                                title="Add To Cart"
-                                                disabled={commerceHandling.itemAddedToCart ? true : false}
-                                                onClick={() => {
-                                                    if (!commerceHandling.itemAddedToCart) {
-                                                        commerceHandling.addToCart(product.id, productQty);
-                                                    } else return;
-                                                }}
-                                            >
-                                                {commerceHandling.itemAddedToCart ? "Added To Cart!" : "Add To Cart"}
-                                            </Button>
-                                        </Grid>
-                                        {product.inventory && product.inventory.managed && product.inventory.available <= 10 ? (
-                                            <Typography variant="subtitle2" style={{ color: "rgba(255,0,0,1)" }}>
-                                                Only {product.inventory.available} left.
-                                            </Typography>
-                                        ) : (
-                                            <Typography variant="body2" style={{ color: "#007600" }}>
-                                                In Stock.
-                                            </Typography>
-                                        )}
+                                    </Grid>
+                                    <Grid container direction="row" justifyContent="center" alignItems="center" className="activeImgWrapper">
+                                        <ImageDisplay product={product} dispatch={setActiveImgUrl} />
                                     </Grid>
                                 </Grid>
+                                <Grid
+                                    className={styles.product__content}
+                                    container
+                                    direction="column"
+                                    item
+                                    xs={12}
+                                    md={6}
+                                    justifyContent="space-around"
+                                >
+                                    <div id="magnified__portal" className={styles.image__portal} />
+                                    <Grid item container justifyContent="space-between" alignItems="center" wrap="nowrap">
+                                        <Typography variant="h4">{product ? product.name : null}</Typography>
+                                        <IconButton style={{ background: "#F5F6F4" }} size="large">
+                                            <FavoriteBorderIcon style={{ color: "#2d3245" }} />
+                                        </IconButton>
+                                    </Grid>
+                                    <Typography
+                                        align="left"
+                                        style={{ color: "#333333", marginBottom: "1.25rem", fontWeight: "300" }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: product ? product.description : null,
+                                        }}
+                                    />
+                                    <Typography gutterBottom variant="h6">
+                                        {product.price ? product.price.formatted_with_symbol : null}
+                                    </Typography>
+                                    <Grid container item alignItems="center" wrap="nowrap" style={{ marginBottom: "1.5rem" }}>
+                                        <Button
+                                            onClick={() => {
+                                                decreaseQty();
+                                            }}
+                                            className={styles.actionButton}
+                                            type="button"
+                                            size="small"
+                                        >
+                                            -
+                                        </Button>
+                                        <Typography style={{ marginRight: "0.8em" }}>{productQty}</Typography>
+                                        <Button
+                                            onClick={() => {
+                                                increaseQty();
+                                            }}
+                                            className={styles.actionButton}
+                                            type="button"
+                                            size="small"
+                                        >
+                                            +
+                                        </Button>
+                                        <AddToCart product={product} amount={productQty} />
+                                    </Grid>
+                                    {product.inventory && product.inventory.managed && product.inventory.available <= 10 ? (
+                                        <Typography variant="subtitle2" style={{ color: "rgba(255,0,0,1)" }}>
+                                            Only {product.inventory.available} left.
+                                        </Typography>
+                                    ) : (
+                                        <Typography variant="body2" style={{ color: "#007600" }}>
+                                            In Stock.
+                                        </Typography>
+                                    )}
+                                </Grid>
                             </Grid>
-                        </Container>
-                        <Container className={styles.product__info}>
-                            <Tabs scrollButtons="auto" value={value} onChange={handleChange} indicatorColor="primary" textColor="primary">
-                                {product.attributes
-                                    ? product.attributes.map((attribute, index) =>
-                                          commerceHandling.attributesExceptions.includes(attribute.id) === false ? (
-                                              <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
-                                          ) : null
-                                      )
-                                    : null}
-                            </Tabs>
-                            <Divider style={{ margin: "1rem 0 2.5rem 0" }} variant="fullWidth" />
-                            <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
+                        </Grid>
+                    </Container>
+                    <Container>
+                        <Tabs scrollButtons="auto" value={value} onChange={handleChange} indicatorColor="primary" textColor="primary">
+                            {product.attributes
+                                ? product.attributes.map((attribute, index) =>
+                                      constants.attributesExceptions.includes(attribute.id) === false ? (
+                                          <Tab key={attribute.id} label={attribute.name} {...a11yProps(index)} />
+                                      ) : null
+                                  )
+                                : null}
+                        </Tabs>
+                        <Divider style={{ margin: "1rem 0 2.5rem 0" }} variant="fullWidth" />
+                        <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
+                            <div>
                                 {product.attributes
                                     ? product.attributes.map((attribute, index) => (
                                           <TabPanel key={attribute.id} value={value} index={index}>
@@ -381,10 +298,10 @@ function ProductView({ match }) {
                                           </TabPanel>
                                       ))
                                     : null}
-                            </SwipeableViews>
-                        </Container>
+                            </div>
+                        </SwipeableViews>
                     </Container>
-                </Container>
+                </>
             )}
         </>
     );
